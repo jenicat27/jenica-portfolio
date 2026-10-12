@@ -1,0 +1,2084 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Jenica's portfolio: Cognitive Science, UX/UI and product design.">
+<!-- Base reset (the hosted preview supplied this automatically; it is written out here so the page runs anywhere) -->
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Jenica — Fold to Discover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Nunito:wght@300;400;600;700&display=swap">
+<style>
+/* Layout: single-screen fortune-teller landing; every section is a sheet of paper that unfolds in place.
+   Single-theme by choice: cream paper look in every host theme. */
+:root{
+  color-scheme: light;
+  --paper:#f7f2ea; --paper-2:#fcf9f4; --ink:#3b3a48; --ink-soft:#6f6d7c; --ink-faint:#a29d97; --line:#ddd3c6;
+  /* flap colors (light face / shaded face / interior tint) */
+  --about-1:#ddd6f3; --about-2:#c9bdea; --about-3:#eee9fa;
+  --proj-1:#f8d3bb; --proj-2:#f0b997; --proj-3:#fcebe0;
+  --exp-1:#c3d7f1; --exp-2:#a5c1e8; --exp-3:#e5eefa;
+  --con-1:#d6b3e2; --con-2:#c196d3; --con-3:#f1e3f6;
+  /* project card paper */
+  --sage:#dfe6cf; --rose:#f3d3d3; --lilac:#dcd8ef; --butter:#f6ecc3; --sky:#d6e3f2; --mint:#d7e9e1;
+  --gold:#e8c35a;
+  --f-hand:"Patrick Hand","Comic Neue","Segoe Print","Bradley Hand",cursive;
+  --f-body:"Nunito","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --sel-soft: var(--about-3); --sel-1: var(--about-1); --sel-2: var(--about-2);
+  /* spacing scale + layout */
+  --s1:4px; --s2:8px; --s3:12px; --s4:16px; --s5:24px; --s6:32px; --s7:48px; --s8:64px;
+  --gutter:clamp(16px,4vw,40px);
+  --content:1440px;
+  /* fluid type scale: grows with the window, never below the original sizes */
+  --fs-body:clamp(15px, .45vw + 9px, 19px);
+  --fs-small:clamp(13px, .35vw + 8px, 16px);
+  --fs-h1:clamp(38px, 3.4vw + 8px, 72px);
+  --fs-h3:clamp(24px, 1.5vw + 6px, 36px);
+  --vh:1vh;
+  --tw:min(720px, 88vw, calc(100 * var(--vh) - 230px));   /* fortune teller size */
+}
+@supports (height:100svh){ :root{ --vh:1svh } }
+/* portrait tablets: lots of height, modest width, so step the type up a notch */
+@media (min-width:700px) and (max-width:1100px) and (orientation:portrait){
+  :root{--fs-body:17px;--fs-small:14.5px;--fs-h1:54px;--fs-h3:29px}
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{background:var(--paper);color:var(--ink)}
+body{
+  font-family:var(--f-body);font-weight:400;font-size:var(--fs-body);line-height:1.6;
+  margin:0;padding-inline:var(--gutter);min-height:calc(100 * var(--vh));display:flex;flex-direction:column;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+html.busy,html.busy body{overflow:hidden}
+a{color:inherit}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px dashed var(--ink-soft);outline-offset:3px;border-radius:6px}
+.hand{font-family:var(--f-hand);font-weight:400}
+
+/* ---------- header ---------- */
+.top{width:100%;max-width:var(--content);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:var(--s2) var(--s4);padding-block:var(--s3) 0;flex-wrap:wrap;position:relative;z-index:5;min-height:64px}
+.logo{font-weight:700;letter-spacing:.22em;font-size:clamp(15px,.6vw + 8px,19px);text-decoration:none}
+.back{display:none;align-items:center;gap:6px;font-size:var(--fs-small);color:var(--ink-soft);text-decoration:none;background:none;border:0;cursor:pointer;padding:10px 0;min-height:44px}
+.back:hover{color:var(--ink)}
+body:not([data-page="home"]) .logo{display:none}
+body:not([data-page="home"]) .back{display:inline-flex}
+.nav{display:flex;gap:clamp(var(--s5),2.2vw,var(--s7));font-size:var(--fs-small)}
+.nav a{text-decoration:none;color:var(--ink-soft);padding:12px 0 2px;border-bottom:1.5px solid transparent;min-height:44px;display:inline-flex;align-items:center}
+.logo{padding-block:10px}
+@media (max-width:520px){
+  .top{flex-direction:column;align-items:stretch;gap:0}
+  .logo,.back{align-self:flex-start}
+  .nav{justify-content:space-between;gap:var(--s2)}
+}
+.nav a:hover{color:var(--ink)}
+.nav a[aria-current="page"]{color:var(--ink);font-weight:700;border-bottom-color:var(--ink-faint)}
+
+/* main fills the window between header and footer; the visible page centers itself in that space */
+main{width:100%;max-width:var(--content);margin:0 auto;padding-block:clamp(var(--s5),4vh,var(--s7));
+  display:flex;flex-direction:column;flex:1 0 auto}
+main > .page{flex:1 0 auto}
+main > .page:not(.landing):not(.contact){display:flex;flex-direction:column;justify-content:center}
+body[data-page="home"] main{padding-block:var(--s2) var(--s4)}
+.page{animation:none}
+.page.enter{animation:unfold .5s cubic-bezier(.2,.8,.2,1) both;transform-origin:50% 0}
+@keyframes unfold{from{opacity:0;transform:perspective(1400px) rotateX(7deg) scale(.985)}to{opacity:1;transform:none}}
+
+/* ---------- landing ---------- */
+.landing{display:grid;align-content:center;gap:clamp(var(--s4),3vh,var(--s6))}
+.chrome{transition:opacity .22s ease}
+html.busy .chrome{opacity:0}
+/* three-column stage: note | fortune teller | note — notes hug the teller instead of the page edges */
+.stage-row{position:relative;display:grid;grid-template-columns:minmax(0,1fr) var(--tw) minmax(0,1fr);align-items:center;gap:clamp(var(--s6),4vw,var(--s8))}
+.meta-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:end;gap:var(--s4)}
+.teller-wrap{position:relative;grid-column:2;width:var(--tw);aspect-ratio:1/1;max-width:100%;z-index:3;
+  transform-origin:50% 50%;will-change:transform}
+.teller-wrap.zooming{transition:transform .5s cubic-bezier(.45,0,.7,.35);transform:scale(7)}
+.teller-wrap.reset{transition:none!important}
+.teller{width:100%;height:100%;overflow:visible;display:block}
+.flap{cursor:pointer;outline:none;transition:transform .3s cubic-bezier(.2,.8,.2,1);
+  transform-box:fill-box;transform-origin:calc(100% - var(--ox)) calc(100% - var(--oy));-webkit-tap-highlight-color:transparent}
+.flap .f1{fill:var(--c1);transition:fill .25s}
+.flap .f2{fill:var(--c2);transition:fill .25s}
+.flap .shadow{fill:#5a4a3a;opacity:.13;transition:opacity .3s}
+.flap .crease{stroke:#fff;stroke-opacity:.6;stroke-width:1.2;fill:none}
+.flap .crease-d{stroke:#6b5a48;stroke-opacity:.14;stroke-width:1;fill:none}
+.flap .pinch{fill:url(#pinch);pointer-events:none}
+.flap .edge{fill:none;stroke:#6f6358;stroke-opacity:.5;stroke-width:1.3;stroke-linejoin:round}
+.flap .ring{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:5 5;opacity:0}
+.flap:focus-visible .ring{opacity:.7}
+.flap text{font-family:var(--f-hand);font-size:25px;letter-spacing:.12em;fill:var(--ink);pointer-events:none;text-anchor:middle;dominant-baseline:middle}
+@media (hover:hover){
+  .teller:not(.opening) .flap:hover{transform:translate(calc(var(--dx)*7px),calc(var(--dy)*7px))}
+  .teller:not(.opening) .flap:hover .f1{fill:var(--c1h)}
+  .teller:not(.opening) .flap:hover .f2{fill:var(--c2h)}
+  .teller:not(.opening) .flap:hover .shadow{opacity:.26}
+}
+.teller:not(.opening) .flap:focus-visible{transform:translate(calc(var(--dx)*7px),calc(var(--dy)*7px))}
+/* opening: every petal folds back on its crease and pulls away from the center; the clicked one leads */
+.teller.opening .flap{transition:transform .36s cubic-bezier(.3,.7,.2,1);transform:translate(calc(var(--dx)*8px),calc(var(--dy)*8px)) scale(.86)}
+.teller.opening .flap.sel{transform:translate(calc(var(--dx)*18px),calc(var(--dy)*18px)) scale(.9)}
+.teller.opening .flap.sel .f1{fill:var(--c1h)}
+.teller.opening .flap.sel .f2{fill:var(--c2h)}
+.teller.opening .flap .shadow{opacity:.3}
+.inside .pocket{transform-box:fill-box;transform-origin:center;transform:scale(.25);transition:transform .38s cubic-bezier(.3,.7,.2,1)}
+.teller.opening .inside .pocket{transform:scale(1)}
+.teller.no-anim .inside .pocket{transition:none}
+.pk.a{fill:#f6eee3;fill:color-mix(in srgb, var(--sel-1) 50%, #fffaf3)}
+.pk.b{fill:#e9dccb;fill:color-mix(in srgb, var(--sel-2) 70%, #fffaf3)}
+html.busy .teller{pointer-events:none}
+.teller.no-anim .flap{transition:none}
+.inside .tint{fill:var(--sel-soft);transition:fill .2s}
+
+.hint{font-size:var(--fs-small);color:var(--ink-faint);margin:var(--s2) 0 0}
+.who{grid-column:2;text-align:center;display:grid;gap:2px}
+.who b{letter-spacing:.24em;font-size:clamp(16px,.9vw + 6px,24px)}
+.who span{font-size:var(--fs-small);color:var(--ink-soft);text-wrap:balance}
+.fold-note{grid-column:1;justify-self:end;align-self:start;margin-top:18%;font-family:var(--f-hand);font-size:clamp(22px,2.3vw,40px);line-height:1.1;transform:rotate(-16deg);color:var(--ink)}
+.fold-note svg{display:block;margin:6px 0 0 1.8em;width:2.6em;height:2.2em}
+.same{grid-column:3;justify-self:start;align-self:start;margin-top:4%;font-family:var(--f-hand);font-size:clamp(18px,1.9vw,32px);line-height:1.15;transform:rotate(-12deg);color:var(--ink-soft)}
+.spark{position:absolute;color:var(--ink);opacity:.75;pointer-events:none}
+.spark svg{display:block}
+.spark.s1{left:calc(50% - var(--tw)/2 - 6px);top:0}
+.spark.s2{right:calc(50% - var(--tw)/2 - 34px);top:30%}
+.spark.s3{left:calc(50% - var(--tw)/2 - 26px);bottom:16%}
+.spark.s4{right:calc(50% - var(--tw)/2 - 30px);bottom:22%}
+.cat-peek{grid-column:3;justify-self:end;position:relative;width:clamp(78px,7vw,128px);margin-right:4%}
+.cat-peek svg{display:block;width:100%}
+.cat-peek .say{position:absolute;right:100%;bottom:66%;white-space:nowrap;font-family:var(--f-hand);font-size:clamp(15px,1.1vw,21px);color:var(--ink-soft);transform:rotate(-6deg)}
+
+@media (max-width:1000px){
+  :root{--tw:min(600px, 100%, calc(100 * var(--vh) - 300px))}
+  .landing{gap:var(--s4)}
+  .stage-row{grid-template-columns:minmax(0,1fr);gap:var(--s3)}
+  .teller-wrap{grid-column:1;justify-self:center;width:var(--tw)}
+  .fold-note{grid-column:1;justify-self:start;margin:0 0 0 var(--s2);transform:rotate(-6deg);font-size:22px}
+  .fold-note svg{display:none}
+  .same,.cat-peek .say,.spark.s3,.spark.s4{display:none}
+  .spark.s1{left:auto;right:14%;top:1%}
+  .spark.s2{right:2px;top:44%}
+  .meta-row{grid-template-columns:52px minmax(0,1fr) 52px;gap:var(--s2)}
+  .cat-peek{width:52px;margin:0}
+}
+
+/* zoom overlay */
+.veil{position:fixed;inset:0;background:var(--sel-soft);opacity:0;pointer-events:none;z-index:50;transition:opacity .16s ease}
+.veil.on{opacity:1}
+.veil.out{transition:opacity .32s ease}
+
+/* ---------- shared section bits ---------- */
+h1.title{font-family:var(--f-hand);font-weight:400;font-size:var(--fs-h1);line-height:1.1;margin:0 0 var(--s1);display:flex;align-items:center;gap:10px;text-wrap:balance}
+.sub{color:var(--ink-soft);font-size:var(--fs-body);margin:0 0 clamp(var(--s6),5vh,var(--s8))}
+.doodle{display:inline-block;color:var(--ink)}
+.sheet{background:var(--paper-2);border:1px solid var(--line);border-radius:4px;box-shadow:0 1px 0 #fff inset,0 10px 30px -18px rgba(80,60,40,.35);padding:clamp(var(--s5),min(4.5vw,6vh),88px) clamp(var(--s5),4.5vw,88px)}
+
+/* about */
+.about-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:var(--s6);align-items:center}
+.about-grid h1{margin:0 0 var(--s2)}
+.roles{font-size:var(--fs-body);color:var(--ink-soft);margin:0 0 var(--s4);line-height:1.7}
+.lede{max-width:44ch;margin:0;font-size:clamp(15px,.6vw + 8px,21px)}
+.about-cat{justify-self:center;width:min(clamp(160px,20vw,330px),calc(32 * var(--vh)),70%);position:relative}
+.curious{margin-top:clamp(var(--s6),5vh,var(--s8));border-top:1px dashed var(--line);padding-top:var(--s5)}
+.curious h2{font-size:var(--fs-small);font-weight:600;margin:0 0 var(--s4);color:var(--ink-soft)}
+.cur-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0}
+.cur{padding:var(--s1) var(--s5);border-left:1px solid var(--line);min-width:0}
+.cur:first-child{border-left:0;padding-left:0}
+.cur svg{width:clamp(40px,3.4vw,58px);height:clamp(40px,3.4vw,58px);display:block;margin-bottom:var(--s3)}
+.cur h3{margin:0 0 var(--s1);font-size:var(--fs-body);font-weight:700}
+.cur p{margin:0;font-size:var(--fs-small);color:var(--ink-soft);line-height:1.5}
+@media (max-width:700px){
+  .about-grid{grid-template-columns:1fr}
+  .about-grid{gap:var(--s4)}
+  .about-cat{order:-1;width:130px}
+  .cur-row{grid-template-columns:1fr;gap:var(--s5)}
+  .cur{border-left:0;padding:0}
+}
+
+/* projects */
+.cards{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:clamp(var(--s4),2.5vw,var(--s6))}
+.card{position:relative;text-align:left;border:0;cursor:pointer;padding:clamp(var(--s5),3vw,var(--s7)) clamp(var(--s4),2.4vw,var(--s7)) clamp(60px,6vw,96px);background:var(--bg);min-height:clamp(250px,min(46vh,40vw),520px);min-width:0;
+  border-radius:2px;box-shadow:0 12px 24px -18px rgba(70,50,30,.5);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s;
+  clip-path:polygon(0 0,calc(100% - clamp(22px,2vw,32px)) 0,100% clamp(22px,2vw,32px),100% 100%,0 100%)}
+.card::after{content:"";position:absolute;top:0;right:0;width:clamp(22px,2vw,32px);height:clamp(22px,2vw,32px);background:linear-gradient(225deg,transparent 50%,rgba(0,0,0,.07) 50%,rgba(255,255,255,.5) 100%)}
+.card:nth-child(1){transform:rotate(-1deg)} .card:nth-child(2){transform:rotate(.8deg)} .card:nth-child(3){transform:rotate(-.6deg)}
+.card:hover,.card:focus-visible{transform:translateY(-6px) rotate(0);box-shadow:0 20px 30px -18px rgba(70,50,30,.55)}
+.card svg.ic{width:clamp(40px,3.6vw,62px);height:clamp(40px,3.6vw,62px);display:block;margin-bottom:clamp(22px,6vh,72px)}
+.card h3{font-family:var(--f-hand);font-weight:400;font-size:var(--fs-h3);margin:0;letter-spacing:.02em}
+.card .tag{font-size:var(--fs-small);color:var(--ink-soft);margin:0 0 var(--s4)}
+.card p{font-size:var(--fs-body);margin:0;color:var(--ink);max-width:28ch}
+.card .inc{margin-top:var(--s4);font-size:var(--fs-small);color:var(--ink-soft);max-width:34ch}
+.card .inc b{display:block;color:var(--ink);font-weight:700}
+.card .go{position:absolute;right:clamp(18px,2vw,32px);bottom:clamp(16px,2vw,30px);width:clamp(28px,2.4vw,42px);height:clamp(28px,2.4vw,42px);border:1.5px solid var(--ink);border-radius:50%;display:grid;place-items:center}
+@media (max-width:640px){.cards{grid-template-columns:1fr;gap:var(--s5)}.card{min-height:0}.card p{max-width:none}}
+
+/* case study */
+.case-head{display:flex;align-items:baseline;gap:var(--s2);margin:0 0 clamp(var(--s6),5vh,var(--s8));font-weight:700;font-size:clamp(17px,.9vw + 7px,25px)}
+.case-head span{font-weight:400;font-size:var(--fs-small);color:var(--ink-soft)}
+.case{display:grid;grid-template-columns:clamp(170px,14vw,240px) minmax(0,1fr) clamp(140px,20vw,300px);gap:var(--s6);align-items:start}
+.steps{list-style:none;margin:0;padding:0;position:relative;display:grid;gap:clamp(14px,2.4vh,26px)}
+.steps::before{content:"";position:absolute;left:calc(clamp(27px,2.3vw,38px) / 2);top:10px;bottom:10px;border-left:1px solid var(--line)}
+.steps button{display:flex;align-items:center;gap:12px;background:none;border:0;cursor:pointer;padding:4px 0;font-size:var(--fs-small);color:var(--ink-soft);position:relative;text-align:left}
+.steps .n{width:clamp(27px,2.3vw,38px);height:clamp(27px,2.3vw,38px);border-radius:50%;border:1px solid var(--line);background:var(--paper-2);display:grid;place-items:center;font-size:clamp(11px,.4vw + 6px,14px);font-variant-numeric:tabular-nums;flex:none}
+.steps .grp{position:relative;z-index:1;background:var(--paper-2);font-size:var(--fs-small);font-weight:700;color:var(--ink);padding-block:var(--s2) var(--s1)}
+.steps .grp:not(:first-child){margin-top:var(--s3)}
+.case-overview{margin:calc(-1 * var(--s5)) 0 clamp(var(--s5),4vh,var(--s7));max-width:70ch;color:var(--ink-soft);font-size:var(--fs-body)}
+.case-body .eyebrow{margin:0 0 var(--s1);font-size:var(--fs-small);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.steps button[aria-current="step"]{color:var(--ink);font-weight:700}
+.steps button[aria-current="step"] .n{background:var(--accent,var(--lilac));border-color:var(--ink-faint)}
+.case-body{min-width:0}
+.case-body h2{font-family:var(--f-hand);font-weight:400;font-size:clamp(34px,2.6vw + 8px,58px);margin:0;display:flex;align-items:center;gap:10px}
+.case-body .tag{font-size:var(--fs-small);color:var(--ink-soft);margin:0 0 var(--s5)}
+.case-body h3{font-size:var(--fs-body);margin:var(--s5) 0 var(--s2)}
+.case-body p{margin:0;max-width:56ch;font-size:var(--fs-body)}
+.case-panel.flip{animation:flip .42s cubic-bezier(.2,.8,.2,1)}
+@keyframes flip{from{opacity:0;transform:perspective(900px) rotateY(-10deg) translateX(-8px);transform-origin:left}to{opacity:1;transform:none}}
+.next{margin-top:var(--s6);display:inline-flex;align-items:center;gap:8px;background:none;border:0;cursor:pointer;font-size:var(--fs-small);color:var(--ink-soft);padding:4px 0}
+.next:hover{color:var(--ink)}
+.phone{width:min(clamp(150px,15vw,250px),calc(30 * var(--vh)));aspect-ratio:9/18;max-width:100%;border-radius:clamp(26px,2.4vw,40px);background:#2f2e38;padding:7px;margin:0 auto;box-shadow:0 18px 30px -16px rgba(40,30,20,.5);transform:rotate(4deg)}
+.screen{width:100%;height:100%;border-radius:clamp(20px,1.9vw,32px);background:var(--paper-2);display:grid;align-content:start;justify-items:center;gap:10px;padding:22px 12px}
+.screen .ring{width:58%;height:auto;aspect-ratio:1;border-radius:50%;background:conic-gradient(var(--accent2) 0 68%,var(--line) 68% 100%);display:grid;place-items:center}
+.screen .ring::after{content:"";width:74%;height:74%;border-radius:50%;background:var(--paper-2)}
+.screen .bar{height:7px;border-radius:4px;background:var(--line);width:80%}
+.screen .bar.s{width:56%;background:var(--accent)}
+.case-art{position:relative;padding-top:var(--s3)}
+.crane{position:absolute;right:0;bottom:-70px;width:clamp(60px,5vw,90px);color:var(--ink)}
+@media (max-width:1000px){
+  .case{grid-template-columns:150px minmax(0,1fr) 130px;gap:var(--s5)}
+  .phone{width:120px}
+  .crane{display:none}
+}
+@media (max-width:700px){
+  .case{grid-template-columns:minmax(0,1fr) 96px;gap:var(--s5) var(--s4)}
+  .steps{grid-column:1 / -1;display:flex;flex-wrap:wrap;gap:var(--s2) var(--s4)}
+  .steps .grp{flex-basis:100%;margin-top:0}
+  .steps::before{display:none}
+  .case-body{grid-column:1;grid-row:2}
+  .case-art{grid-column:2;grid-row:2;padding-top:var(--s2)}
+  .phone{width:88px;border-radius:18px;padding:5px}
+  .screen{border-radius:14px;padding:14px 8px;gap:7px}
+  .screen .ring{width:52px;height:52px}.screen .ring::after{width:38px;height:38px}
+  .case-body h2{font-size:30px}
+}
+@media (max-width:420px){
+  .case{grid-template-columns:minmax(0,1fr)}
+  .case-art{grid-column:1;grid-row:2;justify-self:center;padding-top:0}
+  .phone{width:72px}
+  .case-body{grid-row:3}
+}
+
+/* experience */
+.timeline{position:relative;display:grid;grid-template-columns:repeat(var(--n,4),minmax(0,1fr));gap:clamp(var(--s4),2.5vw,var(--s6));padding-top:var(--s2);padding-bottom:var(--s7)}
+.timeline::after{content:"";position:absolute;left:4%;right:4%;bottom:18px;height:24px;
+  background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 24' preserveAspectRatio='none'%3E%3Cpath d='M0 12 C60 2 90 22 150 12 S260 2 300 12 S370 20 400 10' fill='none' stroke='%237d7a88' stroke-width='1.2' vector-effect='non-scaling-stroke'/%3E%3C/svg%3E") center/100% 100% no-repeat}
+.note{position:relative;border:0;cursor:pointer;background:var(--bg);padding:clamp(var(--s6),3vw,var(--s7)) var(--s3) clamp(var(--s5),2.4vw,var(--s7));min-width:0;min-height:clamp(150px,min(28vh,24vw),320px);display:grid;align-content:center;text-align:center;box-shadow:0 10px 20px -16px rgba(70,50,30,.55);transition:transform .3s cubic-bezier(.2,.8,.2,1)}
+.note:nth-child(odd){transform:rotate(-1.2deg)}.note:nth-child(even){transform:rotate(1deg)}
+.note:hover,.note[aria-expanded="true"]{transform:translateY(-5px) rotate(0)}
+.note::before{content:"";position:absolute;top:-9px;left:50%;width:clamp(58px,5vw,84px);height:clamp(20px,1.6vw,26px);transform:translateX(-50%) rotate(-3deg);background:rgba(235,226,210,.85);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+.note .yr{display:block;font-size:var(--fs-small);font-weight:700;margin-bottom:var(--s3);font-variant-numeric:tabular-nums}
+.note b{display:block;font-size:clamp(14px,.8vw + 6px,22px);margin-bottom:var(--s1)}
+.note small{display:block;font-size:clamp(11.5px,.45vw + 6px,15px);color:var(--ink-soft);line-height:1.4}
+.note .dot{position:absolute;left:50%;bottom:-38px;width:11px;height:11px;border-radius:50%;border:1.5px solid var(--ink-soft);background:var(--paper);transform:translateX(-50%);z-index:1}
+.note[aria-expanded="true"] .dot{background:var(--ink-soft)}
+.detail{margin-top:clamp(var(--s5),4vh,var(--s7));max-width:780px}
+.detail h3{font-family:var(--f-hand);font-weight:400;font-size:var(--fs-h3);margin:0}
+.detail .meta{font-size:var(--fs-small);color:var(--ink-soft);margin:0 0 8px}
+.detail p{margin:0;font-size:var(--fs-body)}
+@media (max-width:760px){
+  .timeline{grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--s6) var(--s4);padding-bottom:0}
+  .timeline::after,.note .dot{display:none}
+  .note:last-child:nth-child(odd){grid-column:1 / -1}
+}
+
+/* contact */
+.contact{display:grid;justify-items:center;align-content:center;text-align:center}
+.env{width:min(clamp(230px,30vw,500px),calc(42 * var(--vh)),70%);margin-bottom:clamp(var(--s5),4vh,var(--s7))}
+.contact h1{font-family:var(--f-hand);font-weight:400;font-size:clamp(28px,3vw + 8px,62px);line-height:1.2;margin:0;text-wrap:balance}
+.contact .sub{margin:var(--s2) 0 clamp(var(--s6),5vh,var(--s8))}
+.links{display:flex;justify-content:center}
+.links a,.links button{display:grid;justify-items:center;gap:6px;padding:var(--s2) clamp(var(--s5),5vw,var(--s6));min-width:44px;text-decoration:none;font-size:var(--fs-small);color:var(--ink-soft);border:0;border-left:1px solid var(--line);background:none;cursor:pointer}
+.links > :first-child{border-left:0}
+.links svg{width:clamp(34px,3vw,54px);height:clamp(34px,3vw,54px);color:#7d86b8}
+.links a:hover,.links button:hover{color:var(--ink)}
+.addr{margin-top:var(--s5);font-size:var(--fs-small);color:var(--ink-soft);min-height:1.6em;user-select:all}
+
+.foot{width:100%;max-width:var(--content);margin:0 auto;padding-block:0 var(--s5);display:flex;justify-content:flex-end}
+.foot span{font-family:var(--f-hand);font-size:clamp(17px,1.2vw,24px);color:var(--ink-soft);transform:rotate(-5deg)}
+body[data-page="home"] .foot{display:none}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
+}
+
+/* ---------- project page: Nexus Edge ---------- */
+:root{ --eco:#8fb07a; --eco-ink:#4f6b45; --eco-l:#e4ecd2; --eco-ll:#f1f5e8; --ph-w:clamp(210px,17vw,260px) }
+.nx-kicker{font-size:var(--fs-small);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 var(--s2)}
+.nx-head .sub b{color:var(--eco-ink)}
+.nx-layout{display:grid;grid-template-columns:clamp(160px,13vw,210px) minmax(0,1fr);gap:clamp(var(--s6),4vw,var(--s8));align-items:start}
+.nx-nav{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--s5));z-index:4}
+.nx-nav ol{list-style:none;margin:0;padding:0;display:grid;gap:var(--s1);position:relative}
+.nx-nav ol::before{content:"";position:absolute;left:calc(clamp(27px,2.3vw,34px)/2);top:12px;bottom:12px;border-left:1px dashed var(--line)}
+.nx-nav button{display:flex;align-items:center;gap:var(--s3);background:none;border:0;cursor:pointer;padding:var(--s2) 0;min-height:44px;font-size:var(--fs-small);color:var(--ink-soft);text-align:left;width:100%}
+.nx-nav button span{position:relative;width:clamp(27px,2.3vw,34px);height:clamp(27px,2.3vw,34px);flex:none;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:grid;place-items:center;font-size:11px;font-variant-numeric:tabular-nums}
+.nx-nav button:hover{color:var(--ink)}
+.nx-nav button[aria-current="true"]{color:var(--ink);font-weight:700}
+.nx-nav button[aria-current="true"] span{background:var(--lilac);border-color:var(--ink-faint)}
+
+.nx-body{min-width:0;display:grid;gap:clamp(var(--s7),9vh,112px)}
+.nx-sec{scroll-margin-top:var(--s5)}
+.nx-h{font-family:var(--f-hand);font-weight:400;font-size:clamp(30px,2.2vw + 10px,50px);line-height:1.1;margin:0 0 var(--s5);display:flex;align-items:baseline;gap:var(--s3);text-wrap:balance}
+.nx-h span{font-family:var(--f-body);font-size:var(--fs-small);font-weight:700;color:var(--ink-soft);letter-spacing:.08em;padding:2px 10px;border:1px solid var(--line);border-radius:999px;background:var(--paper-2);transform:translateY(-.3em)}
+.nx-h3{font-family:var(--f-hand);font-weight:400;font-size:var(--fs-h3);line-height:1.15;margin:0 0 var(--s3)}
+.nx-intro{max-width:64ch;margin:0 0 var(--s6)}
+.nx-lede{font-family:var(--f-hand);font-size:clamp(24px,1.6vw + 10px,40px);line-height:1.25;margin:0 0 var(--s5);max-width:26ch;text-wrap:balance}
+.nx-lede.small{font-family:var(--f-body);font-size:clamp(17px,.7vw + 10px,23px);line-height:1.5;max-width:48ch}
+.nx-lede.small b{color:var(--eco-ink)}
+.nx-fine{margin:var(--s5) 0 0;font-size:var(--fs-small);color:var(--ink-faint)}
+mark.scribble{background:none;color:inherit;position:relative;white-space:nowrap}
+mark.scribble::after{content:"";position:absolute;left:-6%;right:-6%;bottom:-.08em;height:.42em;z-index:-1;border-radius:40% 60% 50% 45%;background:var(--lilac);transform:rotate(-1.5deg)}
+.nx-sec, .problem{position:relative;z-index:0}
+
+/* problem */
+.facts{display:flex;flex-wrap:wrap;gap:var(--s4) var(--s7);margin:0 0 var(--s6)}
+.facts div{display:grid;gap:2px}
+.facts dt{font-size:var(--fs-small);color:var(--ink-soft);text-transform:uppercase;letter-spacing:.08em}
+.facts dd{margin:0;font-weight:700}
+.ai-first{display:grid;grid-template-columns:minmax(0,.8fr) auto minmax(0,1.4fr);align-items:center;gap:var(--s4);max-width:900px}
+.af-card{background:var(--paper-2);border:1px solid var(--line);padding:var(--s5);box-shadow:0 10px 24px -20px rgba(70,50,30,.5)}
+.af-card p{margin:0}
+.af-card.dim{background:transparent;border-style:dashed;color:var(--ink-soft)}
+.af-card.dim p:last-child{text-decoration:line-through;text-decoration-color:var(--ink-faint)}
+.af-card:not(.dim){background:var(--about-3);transform:rotate(.6deg)}
+.af-label{font-size:var(--fs-small);font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin-bottom:var(--s2)!important;color:var(--ink-soft)}
+.af-arrow{width:56px;color:var(--ink-soft)}
+
+/* research */
+.research{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(var(--s4),2vw,var(--s6))}
+.r-card{padding:clamp(var(--s5),2.4vw,var(--s7));background:var(--bg);box-shadow:0 12px 24px -20px rgba(70,50,30,.55);display:grid;align-content:start;gap:var(--s3)}
+.r-card p{margin:0}
+.r-barriers{--bg:var(--sky)} .r-audience{--bg:var(--butter);transform:rotate(-.5deg)} .r-opps{--bg:var(--sage)}
+.r-label{font-size:var(--fs-small);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.r-stat{display:grid;gap:2px;padding-block:var(--s2) var(--s3);border-bottom:1px dashed rgba(59,58,72,.25)}
+.r-num{font-family:var(--f-hand);font-size:clamp(40px,3.4vw + 8px,68px);line-height:1}
+.r-cap{font-size:var(--fs-small);color:var(--ink-soft)}
+.r-list{margin:0;padding-left:1.1em;display:grid;gap:var(--s1)}
+.r-note{font-size:var(--fs-small);color:var(--ink-soft)}
+.chips{list-style:none;margin:var(--s2) 0 var(--s2);padding:0;display:flex;flex-wrap:wrap;gap:var(--s2)}
+.chips li{padding:6px 12px;border-radius:999px;background:var(--paper-2);border:1px solid rgba(59,58,72,.15);font-size:var(--fs-small);font-weight:600}
+
+/* ideation */
+.idea{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:var(--s7);align-items:center;margin-bottom:var(--s7)}
+.idea-text{display:grid;gap:var(--s4)}
+.idea-text p{max-width:60ch;margin:0}
+.loop{margin:0;display:grid;grid-template-columns:minmax(0,1fr) clamp(96px,8vw,130px) minmax(0,1fr);align-items:center;gap:var(--s2);width:100%;max-width:480px;justify-self:center}
+.loop-a,.loop-b{font-size:var(--fs-small);line-height:1.3;text-align:center;padding:var(--s2) var(--s3);border:1px solid var(--line);box-shadow:0 8px 16px -14px rgba(70,50,30,.5)}
+.loop-a{background:var(--eco-l);transform:rotate(-2deg)}
+.loop-b{background:var(--sky);transform:rotate(2deg)}
+.loop-core{position:relative}
+.loop-core svg{width:100%;display:block}
+.loop-mid{position:absolute;inset:0;display:grid;place-items:center;text-align:center;font-family:var(--f-hand);font-size:clamp(15px,.6vw + 9px,19px);line-height:1.1}
+.features{list-style:none;margin:var(--s4) 0 0;padding:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(var(--s4),2vw,var(--s6))}
+.feat{grid-column:span 2;position:relative;background:var(--paper-2);border:1px solid var(--line);padding:clamp(var(--s5),2vw,var(--s6));display:grid;align-content:start;gap:var(--s2);box-shadow:0 10px 22px -20px rgba(70,50,30,.55)}
+.feat:nth-child(4),.feat:nth-child(5){grid-column:span 3}
+.feat h4{margin:var(--s2) 0 0;font-size:clamp(16px,.5vw + 12px,20px)}
+.feat p{margin:0;font-size:var(--fs-small);line-height:1.55}
+.f-num{position:absolute;top:var(--s4);right:var(--s4);font-family:var(--f-hand);font-size:22px;color:var(--ink-faint)}
+.f-ic{width:38px;height:38px;fill:none;stroke:var(--eco-ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;background:var(--eco-l);border-radius:50%;padding:7px}
+.f-link{margin-top:var(--s2)!important;padding-top:var(--s2);border-top:1px dashed var(--line);color:var(--ink-soft)}
+
+/* design: flow (photo 1) */
+.flow-fig{margin:0 0 var(--s8);padding:clamp(var(--s5),3vw,var(--s7));background:var(--paper-2);border:1px solid var(--line);box-shadow:0 12px 30px -22px rgba(70,50,30,.5)}
+.fig-cap{font-family:var(--f-hand);font-size:var(--fs-h3);margin:0 0 var(--s5)}
+.flow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr) auto minmax(0,1fr);gap:var(--s3);align-items:start}
+.flow-col{display:grid;gap:0;min-width:0}
+.flow-title{margin:0 0 var(--s4);font-size:var(--fs-small);font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:var(--s2);min-height:2.6em}
+.flow-title span{width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--paper);display:grid;place-items:center;font-size:12px;flex:none}
+.flow-arrow{width:34px;color:var(--ink-soft);margin-top:calc(2.6em + var(--s4) + 14px)}
+.node{position:relative;background:var(--exp-3);border:1px solid #c9d7ec;padding:10px 12px;font-size:clamp(12.5px,.3vw + 9px,15px);line-height:1.35;border-radius:6px;display:flex;align-items:center;gap:var(--s2)}
+.node.key{background:var(--eco);border-color:var(--eco);color:#fff;font-weight:700;justify-content:center;text-align:center}
+.node.soft{background:var(--eco-ll);border-color:#d6e2c4}
+.flow-col .node.ic + .node.ic{margin-top:var(--s2)}
+.n-ic{width:22px;height:22px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.f-down{height:26px;position:relative}
+.f-down::before{content:"";position:absolute;left:50%;top:3px;bottom:5px;border-left:1.5px solid var(--ink-faint)}
+.f-down::after{content:"";position:absolute;left:50%;bottom:3px;width:7px;height:7px;border-right:1.5px solid var(--ink-faint);border-bottom:1.5px solid var(--ink-faint);transform:translateX(-50%) rotate(45deg)}
+.f-down:has(.f-alt){height:34px}
+.f-alt{position:absolute;left:calc(50% + 10px);top:50%;transform:translateY(-50%);font-family:var(--f-hand);font-size:15px;color:var(--ink-soft);white-space:nowrap}
+
+/* design: feature rows + phones (photo 2) */
+.d-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:clamp(var(--s6),5vw,var(--s8));align-items:center;margin-bottom:clamp(var(--s7),8vh,var(--s8))}
+.d-row.flip{grid-template-columns:auto minmax(0,1fr)}
+.d-row.flip .d-text{order:2}
+.d-text p{margin:0;max-width:52ch}
+.phones{display:flex;gap:clamp(var(--s4),2vw,var(--s6));justify-content:center;align-items:flex-start}
+.phones .ph:nth-child(2){margin-top:var(--s7)}
+.ph{width:var(--ph-w);aspect-ratio:9/18.5;flex:none;border:2px solid var(--ink);border-radius:clamp(24px,2.4vw,34px);padding:6px;background:var(--paper-2);box-shadow:0 22px 36px -22px rgba(50,40,30,.55);container-type:inline-size;transform:rotate(-1deg)}
+.ph:nth-child(2){transform:rotate(1.2deg)}
+.ph.tall{aspect-ratio:9/20.5}
+.scr{position:relative;height:100%;border-radius:clamp(18px,1.9vw,27px);overflow:hidden;background:#fffdf9;font-size:4.3cqw;line-height:1.35;color:var(--ink);padding:8cqw 6cqw 6cqw;display:flex;flex-direction:column;gap:2.4cqw}
+.scr b{font-weight:700}
+.scr small{font-size:3.5cqw;color:var(--ink-soft)}
+.scr .btn{display:block;text-align:center;background:var(--eco);color:#fff;border-radius:2.6cqw;padding:2.8cqw;font-weight:700;font-size:4cqw}
+.scr .btn.ghost{background:#f1efeb;color:var(--ink);font-weight:600}
+.scr .bar{display:flex;align-items:center;justify-content:space-between;gap:2cqw;padding-bottom:2cqw}
+.scr .bar b{font-size:5cqw;flex:1;text-align:center}
+.scr i{font-style:normal}
+.scr .back::before{content:"←"} .scr .gear::before{content:"⚙"}
+.scr .bell::before{content:"";display:inline-block;width:3.6cqw;height:4cqw;border:1.5px solid var(--ink);border-radius:2cqw 2cqw .6cqw .6cqw}
+.scr .card2{background:#f6f4f0;border:1px solid #ebe6de;border-radius:2.6cqw;padding:3.2cqw;display:grid;gap:.6cqw}
+.scr .card2.c{justify-items:center;text-align:center}
+.scr .big{font-size:6.4cqw}
+.scr em{font-style:normal;color:var(--eco-ink)}
+.scr .sec-h{font-size:4.6cqw;margin-top:1cqw}
+
+/* camera + result */
+.scr.cam{padding:0;background:#e9e6e1;gap:0}
+.cam-tip{margin:0;background:#cfcac3;color:#fff;text-align:center;font-size:3.6cqw;padding:6cqw 4cqw 3cqw}
+.viewfinder{flex:1;display:grid;place-items:center;color:#b3ada4;position:relative;margin:6cqw;border-radius:3cqw;background:linear-gradient(var(--ink-faint),var(--ink-faint)) left top/6cqw 1.5px no-repeat,linear-gradient(var(--ink-faint),var(--ink-faint)) left top/1.5px 6cqw no-repeat,linear-gradient(var(--ink-faint),var(--ink-faint)) right bottom/6cqw 1.5px no-repeat,linear-gradient(var(--ink-faint),var(--ink-faint)) right bottom/1.5px 6cqw no-repeat}
+.viewfinder svg{width:26cqw}
+.cam-bar{display:flex;justify-content:space-around;align-items:center;background:#a9a39b;padding:5cqw 4cqw 7cqw;color:#fff}
+.shutter{width:16cqw;height:16cqw;border-radius:50%;background:var(--eco);box-shadow:0 0 0 1.4cqw #fff}
+.ic-gal{width:6cqw;height:5cqw;border:1.5px solid #fff;border-radius:1cqw}
+.ic-flash{font-size:6cqw}
+.scr.result{padding:0;background:#bdb8b1}
+.dimmed{flex:1}
+.scr .sheet{background:#fffdf9;border-radius:5cqw 5cqw 0 0;padding:3cqw 5cqw 6cqw;display:grid;gap:2.6cqw}
+.grab{justify-self:center;width:12cqw;height:1.2cqw;border-radius:1cqw;background:#d9d4cc}
+.res-row{display:flex;gap:3cqw;align-items:flex-start}
+.res-row b{display:block;font-size:5cqw}
+.thumb{flex:none;width:18cqw;height:20cqw;border-radius:2cqw;background:linear-gradient(160deg,#e8e2d8,#cfc6b8);display:grid;place-items:center}
+.thumb svg{width:9cqw}
+
+/* map */
+.scr.map{padding:0;gap:0}
+.search{position:absolute;left:5cqw;right:5cqw;top:7cqw;z-index:2;background:#fff;border-radius:6cqw;padding:3cqw 4cqw;font-size:3.6cqw;color:var(--ink-soft);display:flex;align-items:center;gap:2cqw;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.mag{width:3.4cqw;height:3.4cqw;border:1.5px solid var(--ink-soft);border-radius:50%}
+.mic{margin-left:auto;width:2.4cqw;height:3.6cqw;border-radius:2cqw;background:#7fa0d6}
+.mapbg{position:relative;flex:1;background:
+  linear-gradient(90deg,transparent 47%,#fff 47% 53%,transparent 53%) 0 0/22cqw 22cqw,
+  linear-gradient(0deg,transparent 47%,#fff 47% 53%,transparent 53%) 0 0/22cqw 22cqw,
+  linear-gradient(115deg,transparent 48%,#fff 48% 51%,transparent 51%),
+  #e7e5e0}
+.pin{position:absolute;width:6cqw;height:6cqw;border-radius:50% 50% 50% 0;transform:rotate(-45deg);box-shadow:0 1px 2px rgba(0,0,0,.2)}
+.pin::after{content:"";position:absolute;inset:1.8cqw;border-radius:50%;background:#fff}
+.pin.g{background:var(--eco)} .pin.b{background:#7fa0d6}
+.locate{position:absolute;right:5cqw;top:22cqw;width:8cqw;height:8cqw;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.12)}
+.locate::after{content:"";position:absolute;inset:2.4cqw;border:1.5px solid var(--ink);border-radius:50%}
+.scr.map .sheet{margin-top:-4cqw;position:relative;gap:2cqw}
+.sheet-h{font-size:4.6cqw}
+.loc{display:flex;align-items:center;gap:3cqw}
+.loc b{display:block;font-size:3.9cqw}
+.loc small{color:var(--eco-ink)}
+.loc i{margin-left:auto;color:var(--ink-soft)}
+.lthumb{flex:none;width:12cqw;height:12cqw;border-radius:2cqw}
+.t1{background:linear-gradient(#b8cbe0 50%,#9aa98d 50%)} .t2{background:linear-gradient(90deg,#d8bf9e 0 30%,#efe3cf 30% 60%,#c9a77b 60%)} .t3{background:linear-gradient(#bcd3ea 40%,#8fb07a 40%)}
+
+/* login */
+.scr.login{justify-content:center;gap:2cqw}
+.logo-ic{align-self:center;width:16cqw;height:16cqw;border-radius:50%;background:var(--eco-l);display:grid;place-items:center}
+.logo-ic svg{width:9cqw}
+.welcome{text-align:center;font-size:6.4cqw;line-height:1.2;margin-bottom:3cqw}
+.lbl{color:var(--ink)!important;margin-top:1cqw}
+.inp{border:1px solid #e3ded6;border-radius:2.4cqw;padding:2.6cqw 3cqw;font-size:3.4cqw;color:var(--ink-faint);display:flex;justify-content:space-between}
+.eye{width:3.6cqw;height:2.4cqw;border:1.3px solid var(--ink-soft);border-radius:50%}
+.forgot{align-self:flex-end;color:#5f86c4!important;text-decoration:underline}
+.or{text-align:center;margin-top:2cqw;letter-spacing:.05em}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:2.4cqw}
+.signup{text-align:center}
+.signup u{color:#5f86c4}
+
+/* feed */
+.scr.feed{gap:2cqw}
+.tabs{display:flex;gap:4cqw;font-size:3.5cqw;color:var(--ink-soft);border-bottom:1px solid #eee8df;padding-bottom:1.6cqw}
+.tabs .on{color:var(--eco-ink);font-weight:700;box-shadow:0 1.8cqw 0 -1.2cqw var(--eco)}
+.post{background:#fff;border:1px solid #eee8df;border-radius:2.6cqw;padding:3cqw;display:grid;gap:2cqw}
+.post p{margin:0;font-size:3.5cqw}
+.who2{display:flex;gap:2.4cqw;align-items:center}
+.who2 b{display:block;color:#5f86c4;font-size:3.8cqw}
+.av{width:8cqw;height:8cqw;border-radius:50%;display:grid;place-items:center;font-size:2.8cqw;font-weight:700;color:var(--ink)}
+.a1{background:var(--sky)} .a2{background:var(--rose)} .a3{background:var(--butter)}
+.pic{height:30cqw;border-radius:2cqw}
+.pic.jars{background:
+  radial-gradient(circle at 50% 30%,#e9d9bf 0 2.8cqw,transparent 3cqw) 0 0/9cqw 10cqw,
+  linear-gradient(#a98457 0 10%,transparent 10%) 0 0/100% 10cqw,
+  #d6c09d}
+.pic.park{background:
+  radial-gradient(ellipse at 30% 75%,#5f9a8f 0 4cqw,transparent 4.2cqw),
+  radial-gradient(ellipse at 62% 78%,#5f9a8f 0 4cqw,transparent 4.2cqw),
+  linear-gradient(#bcd8a6 0 55%,#8fb07a 55%)}
+.react{font-size:3.3cqw}
+.fab{position:absolute;right:5cqw;bottom:5cqw;width:11cqw;height:11cqw;border-radius:50%;background:var(--eco);color:#fff;display:grid;place-items:center;font-size:5cqw;box-shadow:0 2px 6px rgba(0,0,0,.15)}
+
+/* impact */
+.pts{background:var(--eco-ll);border-radius:3cqw;padding:4cqw;display:grid;justify-items:center;gap:.6cqw}
+.pts svg{width:8cqw}
+.pts b{font-size:7.4cqw}
+.seg{display:grid;grid-template-columns:repeat(3,1fr);background:#f1efeb;border-radius:2cqw;padding:1cqw;font-size:3.4cqw;text-align:center;color:var(--ink-soft)}
+.seg .on{background:#fff;border-radius:1.6cqw;color:var(--ink);font-weight:700;padding:1.2cqw 0}
+.seg span{padding:1.2cqw 0}
+.bars{height:14cqw;display:flex;align-items:flex-end;gap:4cqw;padding:2cqw 3cqw 0}
+.bars span{flex:1;height:var(--h);border-radius:1cqw 1cqw 0 0}
+.bars .g{background:#c9dbb6} .bars .b{background:#b7cdee}
+.bar-l{display:flex;justify-content:space-around}
+.bar-l small{font-size:2.8cqw}
+.spark-line{width:100%;height:12cqw}
+.co2{color:var(--eco-ink)!important;font-weight:700}
+
+/* profile */
+.scr.profile{align-items:stretch}
+.avatar{align-self:center;width:22cqw;height:22cqw;border-radius:50%;background:radial-gradient(circle at 50% 38%,#d8c7b6 0 4.5cqw,transparent 4.7cqw),radial-gradient(ellipse at 50% 92%,#d8c7b6 0 8cqw,transparent 8.2cqw),#f3e3d5;border:1.2cqw solid #e9d8c6}
+.pname{text-align:center;font-size:5.4cqw}
+.ptag{text-align:center;color:#5f86c4!important}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:2.4cqw}
+.badges{display:grid;grid-template-columns:1fr 1fr;gap:3cqw 2cqw;text-align:center;font-size:3cqw;font-weight:700}
+.badges span{display:grid;justify-items:center;gap:1cqw}
+.bd{width:14cqw;height:14cqw;border-radius:50%;background:radial-gradient(circle,#cfe3d9 0 3cqw,transparent 3.2cqw),#3f6f68}
+.badges .locked{color:var(--ink-faint);font-weight:400}
+.badges .locked .bd{background:radial-gradient(circle,#f3f1ee 0 2.6cqw,transparent 2.8cqw),#d9d6d1}
+
+.upcycle{display:flex;gap:var(--s5);align-items:flex-start;padding:clamp(var(--s5),3vw,var(--s7));background:var(--butter);max-width:820px;box-shadow:0 12px 24px -20px rgba(70,50,30,.55);transform:rotate(-.4deg)}
+.upcycle p{margin:0}
+.upcycle .f-ic{flex:none;background:var(--paper-2)}
+
+/* outcome */
+.outcome{display:grid;gap:var(--s7)}
+.out-text{display:grid;gap:var(--s4);max-width:66ch}
+.out-text p{margin:0}
+.out-cards{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(var(--s5),3vw,var(--s7));align-items:start}
+.present{background:var(--lilac);padding:clamp(var(--s5),3vw,var(--s7));display:grid;gap:var(--s3);box-shadow:0 14px 28px -20px rgba(70,50,30,.55)}
+.present p{margin:0}
+.slide-doodle{width:clamp(70px,6vw,96px)}
+.press{justify-self:start;display:inline-flex;align-items:center;gap:var(--s2);margin-top:var(--s3);padding:12px 20px;min-height:44px;border:1.5px solid var(--ink);border-radius:999px;background:var(--paper-2);text-decoration:none;font-weight:700;transition:transform .2s,box-shadow .2s}
+.press:hover{transform:translate(-2px,-2px);box-shadow:3px 3px 0 var(--ink)}
+.takeaway{position:relative;background:var(--butter);padding:clamp(var(--s6),3vw,var(--s7)) clamp(var(--s5),3vw,var(--s7)) clamp(var(--s5),3vw,var(--s7));transform:rotate(1deg);box-shadow:0 14px 28px -20px rgba(70,50,30,.55);display:grid;gap:var(--s3)}
+.takeaway::before{content:"";position:absolute;top:-10px;left:50%;width:84px;height:24px;transform:translateX(-50%) rotate(-3deg);background:rgba(235,226,210,.9)}
+.takeaway p:last-child{margin:0;font-family:var(--f-hand);font-size:clamp(20px,1vw + 12px,27px);line-height:1.35}
+
+/* presentation page */
+.deck-frame{margin-top:var(--s2);border:2px solid var(--ink);border-radius:10px;padding:clamp(8px,1vw,14px);background:var(--paper-2);box-shadow:0 22px 40px -26px rgba(50,40,30,.6);max-width:1100px}
+.deck-inner{aspect-ratio:16/9;max-width:100%;border-radius:6px;background:repeating-linear-gradient(135deg,var(--paper) 0 14px,#f2ece3 14px 28px);display:grid;place-content:center;justify-items:center;gap:var(--s3);text-align:center;padding:var(--s5)}
+.deck-msg{margin:0;font-family:var(--f-hand);font-size:clamp(22px,1.6vw + 10px,36px)}
+
+/* responsive */
+@media (max-width:1100px){
+  .research{grid-template-columns:1fr 1fr}
+  .r-opps{grid-column:1 / -1}
+  .features{grid-template-columns:1fr 1fr}
+  .feat,.feat:nth-child(4),.feat:nth-child(5){grid-column:auto}
+  .feat:nth-child(5){grid-column:1 / -1}
+}
+@media (max-width:1000px){
+  .nx-layout{grid-template-columns:minmax(0,1fr);gap:var(--s5)}
+  .nx-nav{top:env(safe-area-inset-top,0px);margin-inline:calc(-1 * var(--gutter));padding:var(--s2) var(--gutter);background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line)}
+  .nx-nav ol{display:flex;overflow-x:auto;gap:var(--s4);scrollbar-width:none}
+  .nx-nav ol::before{display:none}
+  .nx-nav button{white-space:nowrap;width:auto}
+  .flow{grid-template-columns:minmax(0,1fr)}
+  .flow-arrow{transform:rotate(90deg);justify-self:center;margin:var(--s2) 0}
+  .flow-title{min-height:0}
+  .d-row,.d-row.flip{grid-template-columns:minmax(0,1fr);gap:var(--s5)}
+  .d-row.flip .d-text{order:0}
+  .idea{grid-template-columns:minmax(0,1fr);gap:var(--s5)}
+  .out-cards{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  :root{--ph-w:min(46vw,220px)}
+  .research{grid-template-columns:minmax(0,1fr)}
+  .features{grid-template-columns:minmax(0,1fr)}
+  .feat:nth-child(5){grid-column:auto}
+  .ai-first{grid-template-columns:minmax(0,1fr)}
+  .af-arrow{transform:rotate(90deg);justify-self:center}
+  .phones{gap:var(--s3)}
+  .phones .ph:nth-child(2){margin-top:var(--s5)}
+  .phones:has(.ph:only-child) .ph{--ph-w:min(66vw,250px)}
+  .upcycle{flex-direction:column}
+}
+
+
+/* ---------- project page: Real Quest (shares the .nx project layout) ---------- */
+.rq{--rq-peach:var(--proj-1);--rq-peach-l:var(--proj-3);--rq-lav:var(--about-1);--rq-lav-l:var(--about-3);--rq-gold:#efc560}
+.rq .nx-nav button[aria-current="true"] span{background:var(--rq-peach)}
+.rq-attr{display:flex;align-items:center;gap:var(--s2);margin:var(--s4) 0 0;font-weight:700;font-size:var(--fs-small)}
+.rq-dot{width:10px;height:10px;border-radius:50%;background:var(--rq-gold);box-shadow:0 0 0 3px var(--paper-2),0 0 0 4px var(--ink-faint)}
+.rq-intro{max-width:64ch;margin:var(--s4) 0 var(--s3)}
+.rq-process{margin:0 0 clamp(var(--s6),5vh,var(--s8))}
+.rq-process li{background:var(--rq-peach-l)}
+.rq mark.scribble::after{background:var(--rq-peach)}
+
+/* problem */
+.tension{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:var(--s4);align-items:center;max-width:820px;margin-bottom:var(--s5)}
+.tension .af-card{transform:rotate(-.6deg)}
+.tension .t-a{background:var(--rq-peach-l)}
+.tension .t-b{background:var(--rq-lav-l);transform:rotate(.7deg)}
+.t-amp{font-family:var(--f-hand);font-size:clamp(34px,2vw + 16px,52px);line-height:1;color:var(--ink-soft)}
+.t-note{max-width:64ch;margin:0;color:var(--ink-soft)}
+
+/* research */
+.compare{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1.15fr);gap:var(--s4);align-items:stretch}
+.c-bereal{--bg:var(--rq-lav-l)} .c-snap{--bg:var(--butter);transform:rotate(.4deg)}
+.c-vs{align-self:center;font-family:var(--f-hand);font-size:clamp(22px,1vw + 14px,30px);color:var(--ink-soft)}
+.c-feats{list-style:none;margin:var(--s2) 0;padding:0;display:grid;gap:var(--s4)}
+.c-feats li{display:grid;gap:2px;padding-left:var(--s4);border-left:2px solid rgba(59,58,72,.18)}
+.c-feats b{font-size:clamp(15px,.4vw + 11px,18px)}
+.c-feats span{font-size:var(--fs-small);line-height:1.5}
+.opp{margin-top:clamp(var(--s5),3vw,var(--s7));padding:clamp(var(--s5),2.5vw,var(--s6));background:var(--rq-peach-l);border-left:4px solid var(--rq-peach);max-width:900px;display:grid;gap:var(--s2)}
+.opp p{margin:0}
+.opp p:last-child{font-family:var(--f-hand);font-size:clamp(19px,.8vw + 12px,26px);line-height:1.35}
+
+/* ideation */
+.evolve{display:grid;grid-template-columns:minmax(0,1fr) minmax(150px,.7fr) minmax(0,1fr);gap:var(--s5);align-items:center;margin-bottom:var(--s7)}
+.ev-card{padding:clamp(var(--s5),2.4vw,var(--s7));box-shadow:0 12px 24px -20px rgba(70,50,30,.55);display:grid;gap:var(--s2)}
+.ev-card p{margin:0}
+.ev-old{background:transparent;border:1.5px dashed var(--ink-faint);color:var(--ink-soft)}
+.ev-new{background:var(--rq-peach-l);transform:rotate(.8deg)}
+.ev-turn{display:grid;gap:var(--s2);justify-items:center;text-align:center;color:var(--ink-soft)}
+.ev-turn svg{width:100%;max-width:120px}
+.ev-turn p{margin:0;font-size:var(--fs-small);font-style:italic}
+.idea-pair{display:grid;grid-template-columns:1fr 1fr;gap:var(--s7);max-width:1000px}
+.idea-pair p{margin:0 0 var(--s2)}
+.idea-pair p:last-child{max-width:46ch}
+
+/* design: flow strip */
+.loop-flow{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s5)}
+.loop-flow li{position:relative;background:var(--rq-lav-l);border:1px solid #d8d0ee;border-radius:8px;padding:var(--s4);font-weight:700;font-size:clamp(13px,.3vw + 10px,16px);display:grid;gap:var(--s2);align-content:start}
+.loop-flow li:nth-child(odd){background:var(--rq-peach-l);border-color:#f0d6c4}
+.loop-flow span{font-family:var(--f-hand);font-weight:400;font-size:22px;color:var(--ink-soft)}
+.loop-flow li:not(:last-child)::after{content:"→";position:absolute;right:calc(-1 * var(--s5) + 2px);top:50%;transform:translateY(-50%);color:var(--ink-faint);font-weight:400}
+.lf-back{display:flex;justify-content:flex-end;align-items:center;gap:var(--s2);margin:var(--s3) 0 0;font-family:var(--f-hand);font-size:17px;color:var(--ink-soft)}
+.lf-back svg{width:30px}
+.step-n{margin:0 0 var(--s1)!important;font-family:var(--f-hand);font-size:clamp(26px,1.2vw + 16px,38px);color:var(--rq-gold);-webkit-text-stroke:.6px var(--ink-soft)}
+
+/* dark BeReal-style screens */
+.dkph{border-color:#2a2930;background:#1d1c22}
+.scr.dk{background:#000;color:#fff;padding:9cqw 5cqw 5cqw;gap:3cqw}
+.scr.dk small{color:#9a98a6}
+.scr.dk .c{text-align:center}
+.dk-top{display:flex;align-items:center;gap:2.4cqw}
+.br{font-size:7.4cqw;letter-spacing:-.02em;margin-right:auto}
+.dk-ic{width:9cqw;height:9cqw;border-radius:50%;border:1px solid #333;display:grid;place-items:center}
+.ic-send{width:3.4cqw;height:3.4cqw;border-top:1.4px solid #fff;border-right:1.4px solid #fff;transform:rotate(-15deg) skew(-8deg)}
+.ic-bell{width:3cqw;height:3.4cqw;border:1.4px solid #fff;border-radius:1.6cqw 1.6cqw .4cqw .4cqw}
+.dk-tabs{display:flex;gap:5cqw;font-size:4.4cqw;color:#666}
+.dk-tabs b{color:#fff;box-shadow:0 2cqw 0 -1.4cqw #fff}
+.dk-card{background:#1b1b1e;border:1px solid #2c2c31;border-radius:5cqw;padding:4.4cqw;display:grid;gap:2.4cqw}
+.dk-card.c{justify-items:center;text-align:center}
+.gold{width:13cqw;height:13cqw;border-radius:50%;background:radial-gradient(circle at 35% 30%,#f7dc8d,var(--rq-gold) 60%,#d9a93b);display:grid;place-items:center;box-shadow:0 0 6cqw rgba(239,197,96,.35)}
+.gold svg{width:6cqw}
+.gold.big{width:22cqw;height:22cqw}
+.gold.big svg{width:10cqw}
+.dk-h{font-size:6.2cqw;letter-spacing:-.01em}
+.dk-list{list-style:none;margin:1cqw 0;padding:0;display:grid;gap:3cqw;text-align:left;justify-self:stretch}
+.dk-list li{display:flex;gap:3cqw;align-items:center}
+.dk-list b{display:block;font-size:4.2cqw}
+.dk-list li > i{flex:none;width:8.6cqw;height:8.6cqw;border-radius:50%;background:#26262b;position:relative}
+.dk-list li > i::after{content:"";position:absolute;inset:3cqw;border:1.3px solid #fff;border-radius:1cqw}
+.dk-list .ic-lock::after{border-radius:.6cqw;top:3.6cqw}
+.dk-list .ic-ppl::after{border-radius:50%}
+.dk-btn{display:block;text-align:center;background:#fff;color:#000;border-radius:999px;padding:3.2cqw;font-weight:800;font-size:4.4cqw;justify-self:stretch}
+.dk-link{font-size:3.8cqw;color:#aaa;text-align:center}
+.dk-photo{border-radius:5cqw;min-height:16cqw;flex:1}
+.dk-photo.sky{background:linear-gradient(170deg,#9ccbe0,#5f93b6 60%,#3b5f78)}
+.dk-photo.tall2{display:flex;flex-direction:column;justify-content:flex-end;gap:2cqw;padding:4.4cqw;background:linear-gradient(170deg,#9ccbe0,#5f93b6 45%,#2b3f52 75%,#5a4b33)}
+.dk-photo small{color:#e8eef3!important}
+.hey{font-size:6.2cqw}
+.dk-tabbar{display:flex;justify-content:space-between;align-items:center;font-size:3cqw;color:#777;border-top:1px solid #222;padding-top:2cqw;margin-inline:-5cqw;padding-inline:3cqw;margin-top:auto}
+.dk-tabbar .on{color:#fff;font-weight:700}
+.dk-tabbar span{display:grid;justify-items:center;gap:.6cqw}
+.cam-b{width:11cqw;height:11cqw;border-radius:50%;background:#fff}
+.av-j{font-style:normal;width:5.6cqw;height:5.6cqw;border-radius:50%;background:#8a5cf0;color:#fff;display:grid;place-items:center;font-size:2.8cqw}
+.dk-nav{display:flex;align-items:center;justify-content:center;gap:2cqw;position:relative;min-height:7cqw}
+.dk-nav > i:first-child{position:absolute;left:0;font-size:7cqw;line-height:1;font-style:normal}
+.dk-nav .more{position:absolute;right:0;width:8cqw;height:8cqw;border-radius:50%;background:#1b1b1e;display:grid;place-items:center;font-style:normal}
+.dk-nav b{font-size:4.8cqw}
+.beta{font-style:normal;font-size:2.6cqw;font-weight:800;letter-spacing:.08em;border:1px solid #333;border-radius:999px;padding:.6cqw 2cqw;color:#aaa}
+.dk-big{font-size:6.4cqw;line-height:1.15;letter-spacing:-.01em}
+.dk-big.sm{font-size:5.4cqw}
+.grp{display:flex;align-items:center;gap:3cqw;background:#1b1b1e;border:1px solid #2c2c31;border-radius:5cqw;padding:3.4cqw}
+.grp b{display:block;font-size:4.4cqw}
+.grp .chev{margin-left:auto;color:#777;font-style:normal}
+.grp.new{justify-content:center;background:transparent;border-style:dashed;color:#9a98a6;font-weight:700;font-size:4cqw}
+.stack{display:flex}
+.stack i{margin-right:-2cqw}
+.grp .stack i,.sel i,.sub-row i,.recap b i{font-style:normal;width:8.4cqw;height:8.4cqw;border-radius:50%;display:inline-grid;place-items:center;font-weight:800;font-size:3.6cqw;color:#fff;border:1.5px solid #000;flex:none}
+.g1{background:linear-gradient(135deg,#f08a8a,#e66a7e)} .g2{background:linear-gradient(135deg,#f6c27a,#ee9a6c)} .g3{background:linear-gradient(135deg,#c86ad8,#8a5cf0)} .g4{background:linear-gradient(135deg,#7fd1b5,#4fa58c)}
+.g5{background:linear-gradient(135deg,#7fd4ea,#6a8ff0)} .g6{background:linear-gradient(135deg,#7f8af0,#5a63d8)} .g7{background:linear-gradient(135deg,#f2a07a,#e8735e)} .g8{background:linear-gradient(135deg,#a3a7b1,#6b707c)}
+.g9{background:linear-gradient(135deg,#f5a3b8,#e57a96)} .g10{background:linear-gradient(135deg,#6f8fc0,#44628f)}
+.caps{letter-spacing:.08em;font-weight:800}
+.sel{display:flex;align-items:center;gap:3cqw;background:#26262b;border-radius:3.4cqw;padding:2.6cqw}
+.sel .chev{margin-left:auto;background:none!important;border:0!important;color:#999;font-weight:400}
+.ta{border:1px solid #555;border-radius:3.4cqw;padding:3.4cqw;min-height:20cqw;display:flex;flex-direction:column;justify-content:space-between;font-size:4cqw}
+.ta small{align-self:flex-end}
+.lock-note{display:flex;gap:1.6cqw;align-items:flex-start;font-weight:700}
+.ic-lock.sm{flex:none;width:2.6cqw;height:2.4cqw;border:1.3px solid #9a98a6;border-radius:.4cqw;margin-top:1.6cqw}
+.scr.dk.center .mid{flex:1;display:grid;align-content:center;justify-items:center;text-align:center;gap:3cqw}
+.dk-nav.plain{min-height:6cqw}
+.pill{display:inline-flex;align-items:center;gap:2cqw;background:#1b1b1e;border:1px solid #2c2c31;border-radius:3cqw;padding:2.6cqw 4cqw;font-weight:800;font-size:4cqw}
+.ic-cal{width:3.6cqw;height:3.4cqw;border:1.3px solid #fff;border-radius:.6cqw;border-top-width:2.2px}
+.dim{color:#777!important}
+.sub-row{display:flex;gap:3cqw;align-items:center}
+.sub-row b{display:block;font-size:4.4cqw}
+.sub-row small{display:block}
+.sub-row .chev{margin-left:auto;color:#777;font-style:normal}
+.count{display:flex;gap:2cqw}
+.count span{flex:1;background:#141416;border:1px solid #2c2c31;border-radius:2.4cqw;padding:1.6cqw 0;display:grid;justify-items:center}
+.count b{font-size:5cqw}
+.count small{font-size:2.4cqw!important;letter-spacing:.08em}
+.banner{display:block;text-align:center;background:var(--rq-gold);color:#2a210d;border-radius:999px;padding:2.4cqw;font-weight:800;font-size:3.8cqw}
+.post-img{position:relative;height:56cqw;border-radius:3.4cqw;background:linear-gradient(160deg,#4f7c86,#2c4a64 50%,#1d2d48 70%,#a68d6b)}
+.inset{position:absolute;left:3cqw;top:3cqw;width:14cqw;height:19cqw;border-radius:2cqw;background:linear-gradient(#f6c48c,#ee9a6c);border:1.2cqw solid #111}
+.react-chip{position:absolute;left:3cqw;bottom:3cqw;background:rgba(40,36,30,.85);border-radius:999px;padding:1.6cqw 3cqw;font-weight:800;font-size:3.4cqw}
+.emoji{display:flex;justify-content:space-between;font-size:6cqw}
+.recap{display:flex;gap:2.4cqw;background:#1b1b1e;border:1px solid #2c2c31;border-radius:4.4cqw;padding:3.2cqw}
+.recap > span:first-child{flex:1;display:grid;align-content:start;gap:1.6cqw;min-width:0}
+.recap b{font-size:3.7cqw;display:flex;align-items:center;gap:2cqw}
+.recap b i{width:6.4cqw!important;height:6.4cqw!important;font-size:2.8cqw!important}
+.recap small{font-size:3.3cqw!important}
+.recap em{font-style:normal;font-size:3.6cqw}
+.thumb2{flex:none;position:relative;width:24cqw;height:26cqw;border-radius:3cqw}
+.thumb2 i{position:absolute;left:2cqw;top:2cqw;width:7cqw;height:9cqw;border-radius:1.6cqw;border:.8cqw solid #000}
+.thumb2 b{position:absolute;right:1.4cqw;bottom:1.4cqw;background:rgba(0,0,0,.75);border-radius:999px;padding:.8cqw 2cqw;font-size:2.8cqw!important}
+.r1{background:linear-gradient(160deg,#3e6b78,#1d3550 65%,#a68d6b)} .r1 i{background:linear-gradient(#7fd4ea,#6a8ff0)}
+.r2{background:radial-gradient(circle at 75% 25%,#f4c79a,transparent 40%),linear-gradient(160deg,#ec8a6e,#8c3a6e 60%,#3b2a5a)} .r2 i{background:linear-gradient(#a17cf0,#7a4fd8)}
+.r3{background:radial-gradient(circle at 70% 10%,rgba(255,220,180,.35),transparent 40%),linear-gradient(160deg,#4a3434,#2a1f24)} .r3 i{background:linear-gradient(#7fd4ea,#6a8ff0)}
+.week{background:linear-gradient(160deg,#2a2416,#1b1b1e 60%)!important;border-color:#5a4a26!important}
+
+/* outcome */
+.ceo{margin:0;padding:clamp(var(--s5),3vw,var(--s7));background:var(--paper-2);border:1px solid var(--line);border-left:6px solid var(--rq-gold);max-width:900px;display:grid;gap:var(--s3);box-shadow:0 12px 26px -22px rgba(70,50,30,.55)}
+.ceo p{margin:0}
+.ceo-q{font-family:var(--f-hand);font-size:clamp(24px,1.4vw + 12px,38px);line-height:1.25;text-wrap:balance}
+.ceo footer{font-size:var(--fs-small);color:var(--ink-soft);max-width:70ch}
+.survey{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(var(--s5),3vw,var(--s7));align-items:start}
+.sv-head{grid-column:1 / -1;max-width:70ch}
+.sv-head p{margin:0 0 var(--s2)}
+.sv-stats{grid-column:1 / -1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(var(--s4),2vw,var(--s6))}
+.stat-tile{background:var(--paper-2);border:1px solid var(--line);padding:clamp(var(--s4),2vw,var(--s6));display:grid;gap:2px;align-content:start}
+.stat-tile b{font-family:var(--f-hand);font-weight:400;font-size:clamp(34px,2.4vw + 12px,58px);line-height:1}
+.stat-tile span{font-weight:700}
+.stat-tile small{font-size:var(--fs-small);color:var(--ink-soft);margin-top:var(--s2)}
+.stat-tile.hl{background:var(--rq-peach-l);border-color:#f0d6c4}
+.sv-chart{margin:0;background:var(--paper-2);border:1px solid var(--line);padding:clamp(var(--s4),2vw,var(--s6))}
+.sv-chart figcaption{font-weight:700;margin-bottom:var(--s5)}
+.sv-chart figcaption small{display:block;font-weight:400;color:var(--ink-soft);font-size:var(--fs-small)}
+.bars5{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:var(--s3);align-items:end;height:200px;border-bottom:1px solid var(--ink-faint);position:relative}
+.b5{display:flex;flex-direction:column;justify-content:flex-end;align-items:center;height:100%;position:relative}
+.b5 i{display:block;width:62%;height:calc(var(--v) / 5 * (100% - 26px));background:#e3a07a;border-radius:4px 4px 0 0}
+.b5 em{font-style:normal;font-size:12.5px;color:var(--ink-soft);margin-bottom:4px;white-space:nowrap}
+.b5 span{position:absolute;bottom:-24px;font-size:var(--fs-small);color:var(--ink-soft);font-variant-numeric:tabular-nums}
+.b5:hover i{background:#d4895f}
+.sv-chart{padding-bottom:calc(clamp(var(--s4),2vw,var(--s6)) + 22px)}
+.sv-goals p{margin:0 0 var(--s3)}
+.sv-goals ul{margin:0;padding-left:1.1em;display:grid;gap:var(--s2)}
+.quotes{grid-column:1 / -1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(var(--s4),2vw,var(--s6))}
+.quotes blockquote{margin:0;padding:clamp(var(--s5),2vw,var(--s6));background:var(--rq-lav-l);font-family:var(--f-hand);font-size:clamp(18px,.6vw + 12px,23px);line-height:1.35;box-shadow:0 12px 22px -20px rgba(70,50,30,.55)}
+.quotes blockquote:nth-child(2){background:var(--rq-peach-l);transform:rotate(.8deg)}
+.quotes blockquote:nth-child(3){transform:rotate(-.6deg)}
+.rq-try{background:#2a2930;color:#f4f1ea}
+.rq-try .r-label{color:#c8c4d4}
+.rq-try .press{border-color:var(--rq-gold);background:var(--rq-gold);color:#2a210d}
+.rq-try .press:hover{box-shadow:3px 3px 0 #f4f1ea}
+.rq .takeaway{background:var(--rq-peach-l)}
+.rq .takeaway p:nth-child(2){margin:0;font-family:var(--f-hand);font-size:clamp(20px,1vw + 12px,27px);line-height:1.35}
+.rq .takeaway p.tk-small{font-family:var(--f-body);font-size:var(--fs-small);color:var(--ink-soft);line-height:1.6}
+
+@media (max-width:1100px){
+  .loop-flow{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .loop-flow li:nth-child(3)::after{display:none}
+  .evolve{grid-template-columns:minmax(0,1fr)}
+  .ev-turn{grid-template-columns:auto 1fr;text-align:left;justify-items:start;align-items:center}
+  .ev-turn svg{width:70px;transform:rotate(90deg)}
+}
+@media (max-width:1000px){
+  .compare{grid-template-columns:minmax(0,1fr)}
+  .c-vs{justify-self:center}
+  .survey{grid-template-columns:minmax(0,1fr)}
+  .quotes{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:640px){
+  .tension{grid-template-columns:minmax(0,1fr)}
+  .t-amp{justify-self:center}
+  .loop-flow{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  .loop-flow li::after{display:none}
+  .sv-stats{grid-template-columns:minmax(0,1fr)}
+  .idea-pair{grid-template-columns:minmax(0,1fr);gap:var(--s5)}
+  .b5 em{font-size:11px;white-space:normal;text-align:center}
+}
+
+
+/* ---------- about page ---------- */
+.ab-grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(0,1fr);gap:clamp(var(--s6),5vw,var(--s8));align-items:start}
+.ab-roles{margin:0 0 var(--s4);display:grid;gap:2px;font-size:var(--fs-small);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft)}
+.ab-main h1.title{margin:0 0 clamp(var(--s5),3vh,var(--s6))}
+.ab-lede{margin:0 0 var(--s5);max-width:38ch;font-size:clamp(18px,.8vw + 11px,25px);line-height:1.5}
+.ab-hl{background:none;color:inherit;position:relative;white-space:nowrap;z-index:0}
+.ab-hl::after{content:"";position:absolute;left:-3%;right:-3%;bottom:.05em;height:.38em;z-index:-1;border-radius:40% 60% 50% 45%;background:var(--about-1);transform:rotate(-1deg)}
+.ab-body{margin:0;max-width:58ch;color:var(--ink)}
+.ab-body b{font-weight:700}
+.ab-side{display:grid;gap:var(--s5);justify-items:center;padding-top:var(--s5)}
+.ab-side .about-cat{width:min(clamp(150px,15vw,240px),calc(26 * var(--vh)),70%)}
+.ab-note{position:relative;background:var(--butter);padding:clamp(var(--s5),2.4vw,var(--s6));padding-top:clamp(var(--s6),2.6vw,var(--s7));transform:rotate(1.2deg);box-shadow:0 14px 26px -20px rgba(70,50,30,.55);max-width:400px}
+.ab-note::before{content:"";position:absolute;top:-10px;left:50%;width:84px;height:24px;transform:translateX(-50%) rotate(-3deg);background:rgba(235,226,210,.9)}
+.ab-note p{margin:0;font-size:var(--fs-small);line-height:1.6}
+.ab-note-h{font-family:var(--f-hand);font-size:clamp(20px,.8vw + 13px,26px)!important;line-height:1.2!important;margin-bottom:var(--s3)!important}
+.ab-doodles{list-style:none;margin:0 0 var(--s4);padding:0;display:flex;gap:var(--s4);flex-wrap:wrap}
+.ab-doodles li{display:grid;justify-items:center;gap:2px;font-family:var(--f-hand);font-size:15px;color:var(--ink-soft)}
+.ab-doodles svg{width:52px;height:38px}
+.ab-belief{position:relative;margin:clamp(var(--s6),6vh,var(--s8)) auto 0;max-width:34ch;text-align:center;font-family:var(--f-hand);font-size:clamp(22px,1.4vw + 12px,36px);line-height:1.3;text-wrap:balance;padding-bottom:var(--s3)}
+.ab-dash{margin-inline:.15em}
+.ab-under{position:absolute;left:15%;right:15%;bottom:-4px;width:70%;height:12px}
+@media (max-width:860px){
+  .ab-grid{grid-template-columns:minmax(0,1fr)}
+  .ab-side{grid-template-columns:auto minmax(0,1fr);align-items:center;justify-items:start;padding-top:0}
+  .ab-side .about-cat{width:clamp(110px,24vw,170px)}
+}
+@media (max-width:560px){
+  .ab-side{grid-template-columns:minmax(0,1fr);justify-items:center}
+  .ab-belief{text-align:left;margin-left:0}
+  .ab-under{left:0;width:80%}
+}
+
+</style>
+</head>
+<body>
+<!-- reusable SVG defs -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>
+    <filter id="wobble" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="1" seed="4"/><feDisplacementMap in="SourceGraphic" scale="1.8"/></filter>
+    <radialGradient id="pinch" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="175">
+      <stop offset="0" stop-color="#5a4636" stop-opacity=".2"/>
+      <stop offset=".4" stop-color="#5a4636" stop-opacity=".05"/>
+      <stop offset=".8" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="#fff" stop-opacity=".22"/>
+    </radialGradient>
+    <radialGradient id="pocket" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#6b5a48" stop-opacity=".28"/>
+      <stop offset=".55" stop-color="#6b5a48" stop-opacity=".06"/>
+      <stop offset="1" stop-color="#6b5a48" stop-opacity="0"/>
+    </radialGradient>
+    <symbol id="star" viewBox="-12 -12 24 24"><path d="M0 -10 C1 -2 2 -1 10 0 C2 1 1 2 0 10 C-1 2 -2 1 -10 0 C-2 -1 -1 -2 0 -10Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
+    <symbol id="cat" viewBox="0 0 124 140">
+      <path d="M94 124 C112 116 118 98 108 88 L102 92 C110 100 104 114 90 118Z" fill="#e6dacb" stroke="#bfae9b" stroke-width=".8"/>
+      <path d="M40 62 L78 62 L60 118Z" fill="#fbf6ef" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M40 62 L60 118 L30 132 L22 108Z" fill="#efe6da" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M78 62 L100 130 L60 118Z" fill="#e1d4c4" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M30 132 L60 118 L100 130 L64 136Z" fill="#eadfd1" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M48 126 L58 120 L60 134 L50 136Z" fill="#fbf6ef" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M64 120 L74 126 L72 136 L62 134Z" fill="#f4ece2" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M28 24 L36 0 L52 22Z" fill="#efe6da" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M33 18 L37 7 L45 20Z" fill="#f2c9c4"/>
+      <path d="M64 22 L80 2 L86 26Z" fill="#e1d4c4" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M69 21 L78 10 L81 23Z" fill="#f2c9c4"/>
+      <path d="M28 24 L86 24 L57 40Z" fill="#fbf6ef" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M28 24 L57 40 L38 66 L20 46Z" fill="#f2eadf" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M86 24 L94 46 L78 66 L57 40Z" fill="#e4d8c9" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M38 66 L57 40 L78 66Z" fill="#f8f2ea" stroke="#cdbdaa" stroke-width=".8"/>
+      <path d="M40 46 q4 -4 8 0 M66 46 q4 -4 8 0" fill="none" stroke="#4a4652" stroke-width="1.6" stroke-linecap="round"/>
+      <ellipse cx="38" cy="54" rx="4.5" ry="2.6" fill="#f3b9b6" opacity=".8"/>
+      <ellipse cx="77" cy="54" rx="4.5" ry="2.6" fill="#f3b9b6" opacity=".8"/>
+      <path d="M55 53 l2.5 2.5 l2.5 -2.5Z" fill="#d99a96"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header class="top">
+  <a class="logo" href="#home" data-route="home">JENICA</a>
+  <button class="back" id="back" type="button">← <span id="backLabel">Back to folds</span></button>
+  <nav class="nav" aria-label="Sections">
+    <a href="#about" data-route="about">About</a>
+    <a href="#projects" data-route="projects">Projects</a>
+    <a href="#experience" data-route="experience">Experience</a>
+    <a href="#contact" data-route="contact">Contact</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <!-- ============ LANDING ============ -->
+  <section class="page landing" id="page-home" data-page="home" aria-label="Home">
+    <div class="stage-row">
+    <div class="fold-note chrome" aria-hidden="true">Fold to<br>&nbsp;&nbsp;discover
+      <svg viewBox="0 0 70 60"><path d="M6 4 C14 30 40 20 34 34 C30 44 18 36 26 30 C34 24 46 44 60 54" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M52 54 L61 55 L58 46" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </div>
+    <span class="spark chrome s1" aria-hidden="true"><svg width="18" height="18"><use href="#star"/></svg></span>
+    <span class="spark chrome s2" aria-hidden="true"><svg width="14" height="14"><use href="#star"/></svg></span>
+    <span class="spark chrome s3" aria-hidden="true"><svg width="11" height="11"><use href="#star"/></svg></span>
+    <span class="spark chrome s4" aria-hidden="true"><svg width="12" height="12"><use href="#star"/></svg></span>
+
+    <div class="teller-wrap" id="tellerWrap">
+      <svg class="teller" id="teller" viewBox="-200 -200 400 400" role="group" aria-label="Fortune teller navigation. Choose a fold.">
+        <!-- interior, revealed when the petals part -->
+        <g class="inside" aria-hidden="true">
+          <!-- inner pocket: four pyramid walls (like the numbered inner flaps) in the clicked flap's color -->
+          <g class="pocket">
+            <path class="pk a" d="M0 0 L0 -160 L-80 -80Z"/><path class="pk b" d="M0 0 L-80 -80 L-160 0Z"/>
+            <path class="pk b" d="M0 0 L0 -160 L80 -80Z"/><path class="pk a" d="M0 0 L80 -80 L160 0Z"/>
+            <path class="pk a" d="M0 0 L160 0 L80 80Z"/><path class="pk b" d="M0 0 L80 80 L0 160Z"/>
+            <path class="pk b" d="M0 0 L-160 0 L-80 80Z"/><path class="pk a" d="M0 0 L-80 80 L0 160Z"/>
+            <circle r="90" fill="url(#pocket)"/>
+            <path d="M0 -160 V160 M-160 0 H160" stroke="#fff" stroke-opacity=".75" stroke-width="1.2"/>
+            <path d="M-80 -80 L80 80 M80 -80 L-80 80" stroke="#7a6654" stroke-opacity=".18" stroke-width="1"/>
+            <circle r="4" fill="#5a4636" opacity=".5"/>
+          </g>
+        </g>
+
+        <g class="flap" data-route="about" tabindex="0" role="button" aria-label="About"
+           style="--dx:-.707;--dy:-.707;--ox:100%;--oy:100%;--c1:var(--about-1);--c2:var(--about-2);--c1h:#d0c6ef;--c2h:#bbace4;--c3:var(--about-3)">
+          <g transform="scale(1 1)">
+            <path class="shadow" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#soft)" transform="translate(0 6)"/>
+            <path class="f2" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Z"/><path class="f1" d="M-3 -3 L-138 -3 Q-178 -60 -160 -160 Z"/>
+            <path class="pinch" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
+            <path class="crease" d="M-3 -3 L-160 -160"/><path class="crease-d" d="M-4 -2 L-160 -159"/>
+            <path class="edge" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#wobble)"/><path class="ring" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
+          </g>
+          <text transform="translate(-74 -74) rotate(-45)" style="font-size:22px">ABOUT</text>
+        </g>
+        <g class="flap" data-route="projects" tabindex="0" role="button" aria-label="Projects"
+           style="--dx:.707;--dy:-.707;--ox:0%;--oy:100%;--c1:var(--proj-1);--c2:var(--proj-2);--c1h:#f6c6a6;--c2h:#eaa982;--c3:var(--proj-3)">
+          <g transform="scale(-1 1)">
+            <path class="shadow" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#soft)" transform="translate(0 6)"/>
+            <path class="f1" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Z"/><path class="f2" d="M-3 -3 L-138 -3 Q-178 -60 -160 -160 Z"/>
+            <path class="pinch" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
+            <path class="crease" d="M-3 -3 L-160 -160"/><path class="crease-d" d="M-4 -2 L-160 -159"/>
+            <path class="edge" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#wobble)"/><path class="ring" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
+          </g>
+          <text transform="translate(74 -74) rotate(45)" style="font-size:21px">PROJECTS</text>
+        </g>
+        <g class="flap" data-route="experience" tabindex="0" role="button" aria-label="Experience"
+           style="--dx:-.707;--dy:.707;--ox:100%;--oy:0%;--c1:var(--exp-1);--c2:var(--exp-2);--c1h:#b4cdef;--c2h:#94b4e2;--c3:var(--exp-3)">
+          <g transform="scale(1 -1)">
+            <path class="shadow" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#soft)" transform="translate(0 -6)"/>
+            <path class="f1" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Z"/><path class="f2" d="M-3 -3 L-138 -3 Q-178 -60 -160 -160 Z"/>
+            <path class="pinch" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
+            <path class="crease" d="M-3 -3 L-160 -160"/><path class="crease-d" d="M-4 -2 L-160 -159"/>
+            <path class="edge" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#wobble)"/><path class="ring" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
+          </g>
+          <text transform="translate(-74 74) rotate(45)" style="font-size:19px">EXPERIENCE</text>
+        </g>
+        <g class="flap" data-route="contact" tabindex="0" role="button" aria-label="Contact"
+           style="--dx:.707;--dy:.707;--ox:0%;--oy:0%;--c1:var(--con-1);--c2:var(--con-2);--c1h:#cda4dc;--c2h:#b585ca;--c3:var(--con-3)">
+          <g transform="scale(-1 -1)">
+            <path class="shadow" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#soft)" transform="translate(0 -6)"/>
+            <path class="f2" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Z"/><path class="f1" d="M-3 -3 L-138 -3 Q-178 -60 -160 -160 Z"/>
+            <path class="pinch" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
+            <path class="crease" d="M-3 -3 L-160 -160"/><path class="crease-d" d="M-4 -2 L-160 -159"/>
+            <path class="edge" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#wobble)"/><path class="ring" d="M-3 -3 L-3 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
+          </g>
+          <text transform="translate(74 74) rotate(-45)" style="font-size:21px">CONTACT</text>
+        </g>
+        <circle r="4.5" fill="#6b5a48" opacity=".55" aria-hidden="true" pointer-events="none"/>
+      </svg>
+    </div>
+    <div class="same chrome" aria-hidden="true">Same story,<br>&nbsp;different folds ♡</div>
+    </div>
+
+    <div class="meta-row">
+    <span aria-hidden="true"></span>
+    <div class="who chrome">
+      <b>JENICA</b>
+      <span>Cognitive Science × UX/UI × Product Design</span>
+      <p class="hint">Tap a fold to open it</p>
+    </div>
+
+    <div class="cat-peek chrome" aria-hidden="true">
+      <span class="say">psst, pick a fold</span>
+      <svg viewBox="0 0 124 140"><use href="#cat"/></svg>
+    </div>
+    </div>
+  </section>
+
+  <!-- ============ ABOUT ============ -->
+  <section class="page" id="page-about" data-page="about" hidden aria-label="About">
+    <div class="sheet">
+      <div class="ab-grid">
+        <div class="ab-main">
+          <p class="ab-roles"><span>Cognitive Science Student · UX/UI Designer</span><span>Product Thinker · Human-Centered Design</span></p>
+          <h1 class="title">Hi, I'm Jenica <svg class="doodle" width="26" height="22" viewBox="0 0 26 22" aria-hidden="true"><path d="M3 18 L5 6 L10 12 L13 3 L16 12 L21 6 L23 18Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg></h1>
+          <p class="ab-lede">Hi! I'm a Cognitive Science student at <mark class="ab-hl">UC San Diego</mark> specializing in Design &amp; Interaction. I'm fascinated by how people interact with technology and how thoughtful design can turn complex ideas into experiences that feel intuitive, useful, and meaningful.</p>
+          <p class="ab-body">I'm drawn to the space where <b>UX design</b>, <b>product thinking</b>, and <b>AI</b> intersect. Whether I'm exploring a new product concept, prototyping an interface, or learning from user feedback, I enjoy figuring out how an idea can become something people genuinely connect with.</p>
+        </div>
+        <aside class="ab-side">
+          <div class="about-cat" aria-hidden="true">
+            <svg viewBox="0 0 124 140"><use href="#cat"/></svg>
+            <svg style="position:absolute;right:-6%;top:22%;width:22px" viewBox="0 0 24 22"><path d="M12 20 C4 14 1 9 4 5 C7 1 11 3 12 6 C13 3 17 1 20 5 C23 9 20 14 12 20Z" fill="#f0b5b5" stroke="#3b3a48" stroke-width="1.2"/></svg>
+            <svg style="position:absolute;left:-4%;top:4%;width:16px"><use href="#star"/></svg>
+          </div>
+          <div class="ab-note">
+            <p class="ab-note-h">Off the clock</p>
+            <ul class="ab-doodles" aria-hidden="true">
+              <li><svg viewBox="0 0 60 44"><path d="M2 30 L22 22 L30 4 L36 22 L58 14 L42 30 L30 40 L20 32Z M22 22 L30 40 M36 22 L30 40" fill="#ddd6f3" stroke="#3b3a48" stroke-width="1.3" stroke-linejoin="round"/></svg>origami</li>
+              <li><svg viewBox="0 0 60 44"><path d="M8 34 h44 M14 34 l4 -18 h24 l4 18" fill="#f6ecc3" stroke="#3b3a48" stroke-width="1.3" stroke-linejoin="round"/><path d="M22 22 h16 M22 27 h12" stroke="#3b3a48" stroke-width="1.2" stroke-linecap="round"/></svg>inspiration</li>
+              <li><svg viewBox="0 0 60 44"><circle cx="44" cy="12" r="6" fill="#f8d3bb" stroke="#3b3a48" stroke-width="1.3"/><path d="M2 28 c8 -6 14 6 22 0 s14 6 22 0 s10 4 12 2 M2 37 c8 -6 14 6 22 0 s14 6 22 0 s10 4 12 2" fill="none" stroke="#7fa0d6" stroke-width="1.6" stroke-linecap="round"/></svg>the beach</li>
+            </ul>
+            <p>When I'm not designing, you can usually find me folding origami, collecting inspiration from everyday experiences, or spending time at the beach. I'm always curious about new ideas, different perspectives, and the little details that make an experience memorable.</p>
+          </div>
+        </aside>
+      </div>
+      <p class="ab-belief">I believe good design starts with understanding people<span class="ab-dash">—</span>and I'm excited to keep learning, experimenting, and creating things that make a difference.<svg class="ab-under" viewBox="0 0 300 12" preserveAspectRatio="none" aria-hidden="true"><path d="M2 8 C60 2 120 11 180 6 S270 3 298 7" fill="none" stroke="#e3a07a" stroke-width="2" stroke-linecap="round"/></svg></p>
+      <div class="curious">
+        <h2>What I'm curious about</h2>
+        <div class="cur-row">
+          <div class="cur">
+            <svg viewBox="0 0 40 40" aria-hidden="true"><g fill="#d7d0f0" stroke="#6f66a8" stroke-width="1.4" stroke-linejoin="round"><path d="M20 8 C14 5 7 8 7 14 C3 17 4 24 8 26 C8 31 14 34 20 31 C26 34 32 31 32 26 C36 24 37 17 33 14 C33 8 26 5 20 8Z"/></g><path d="M20 8 V31 M13 14 c3 1 4 4 3 7 M27 14 c-3 1 -4 4 -3 7 M11 24 c3 0 5 2 5 4 M29 24 c-3 0 -5 2 -5 4" fill="none" stroke="#6f66a8" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <h3>People</h3><p>How people think, behave, and interact with technology.</p>
+          </div>
+          <div class="cur">
+            <svg viewBox="-20 -20 40 40" aria-hidden="true"><path d="M0 -17 C2 -4 4 -2 17 0 C4 2 2 4 0 17 C-2 4 -4 2 -17 0 C-4 -2 -2 -4 0 -17Z" fill="#f6e3a3" stroke="#b8902a" stroke-width="1.4" stroke-linejoin="round"/></svg>
+            <h3>Design</h3><p>Creating intuitive and meaningful experiences.</p>
+          </div>
+          <div class="cur">
+            <svg viewBox="0 0 40 40" aria-hidden="true"><rect x="11" y="11" width="18" height="18" rx="3" fill="#ddd6f3" stroke="#6f66a8" stroke-width="1.4"/><rect x="16" y="16" width="8" height="8" rx="1.5" fill="none" stroke="#6f66a8" stroke-width="1.3"/><path d="M15 6v5M20 6v5M25 6v5M15 29v5M20 29v5M25 29v5M6 15h5M6 20h5M6 25h5M29 15h5M29 20h5M29 25h5" stroke="#6f66a8" stroke-width="1.4" stroke-linecap="round"/></svg>
+            <h3>Technology</h3><p>Exploring how AI can support better products and lives.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECTS ============ -->
+  <section class="page" id="page-projects" data-page="projects" hidden aria-label="Projects">
+    <h1 class="title">Projects <svg class="doodle" width="22" height="22" aria-hidden="true"><use href="#star"/></svg></h1>
+    <p class="sub">A few things I've built, designed, and explored.</p>
+    <div class="cards" id="cards"></div>
+  </section>
+
+  <!-- ============ CASE STUDY ============ -->
+  <section class="page" id="page-case" data-page="case" hidden aria-label="Case study">
+    <div class="sheet">
+      <div class="case-head" id="caseHead"></div>
+      <p class="case-overview" id="caseOverview" hidden></p>
+      <div class="case" id="case">
+        <ol class="steps" id="steps"></ol>
+        <div class="case-body"><div class="case-panel" id="casePanel"></div>
+          <button class="next" id="nextStep" type="button">
+            <svg width="26" height="10" viewBox="0 0 26 10" aria-hidden="true"><path d="M1 7 C6 2 10 9 15 5" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+            <span>next</span> →</button>
+        </div>
+        <div class="case-art" aria-hidden="true">
+          <div class="phone"><div class="screen"><div class="ring"></div><div class="bar s"></div><div class="bar"></div><div class="bar"></div></div></div>
+          <svg class="crane" viewBox="0 0 60 44"><path d="M2 30 L22 22 L30 4 L36 22 L58 14 L42 30 L30 40 L20 32Z M22 22 L30 40 M36 22 L30 40" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECT: NEXUS EDGE ============ -->
+  <section class="page nx" id="page-nexus" data-page="nexus" hidden aria-label="Nexus Edge — Google AI Micro-Intern">
+    <header class="nx-head">
+      <p class="nx-kicker">Project · Google AI × Product</p>
+      <h1 class="title">Nexus Edge — Google AI Micro-Intern <svg class="doodle" width="22" height="22" aria-hidden="true"><use href="#star"/></svg></h1>
+      <p class="sub">Featuring <b>EcoLoop</b>, an AI-first sustainability app concept I worked on during the program.</p>
+    </header>
+
+    <div class="nx-layout">
+      <nav class="nx-nav" aria-label="Project sections">
+        <ol>
+          <li><button type="button" data-target="nx-problem"><span>01</span>The Problem</button></li>
+          <li><button type="button" data-target="nx-research"><span>02</span>Research</button></li>
+          <li><button type="button" data-target="nx-ideation"><span>03</span>Ideation</button></li>
+          <li><button type="button" data-target="nx-design"><span>04</span>Design</button></li>
+          <li><button type="button" data-target="nx-outcome"><span>05</span>Outcome</button></li>
+        </ol>
+      </nav>
+
+      <div class="nx-body">
+
+        <!-- 01 · THE PROBLEM -->
+        <section class="nx-sec" id="nx-problem" aria-labelledby="h-problem">
+          <h2 class="nx-h" id="h-problem"><span>01</span>The Problem</h2>
+          <div class="problem">
+            <p class="nx-lede">How could <mark class="scribble">AI-first</mark> applications and videos address real-world problems?</p>
+            <dl class="facts">
+              <div><dt>Program</dt><dd>Nexus Edge Google AI Micro-Internship</dd></div>
+              <div><dt>Tool</dt><dd>Google AI Studio</dd></div>
+            </dl>
+            <div class="ai-first" aria-label="Adding AI versus AI-first">
+              <div class="af-card dim">
+                <p class="af-label">Not just this</p>
+                <p>Adding AI to an existing solution</p>
+              </div>
+              <svg class="af-arrow" viewBox="0 0 60 24" aria-hidden="true"><path d="M3 14 C18 4 34 22 52 11" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M45 7 L53 11 L46 17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="af-card">
+                <p class="af-label">The goal</p>
+                <p>Find challenges where AI enables new possibilities, and design experiences that show how it can solve problems in meaningful ways</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 02 · RESEARCH -->
+        <section class="nx-sec" id="nx-research" aria-labelledby="h-research">
+          <h2 class="nx-h" id="h-research"><span>02</span>Research</h2>
+          <p class="nx-intro">My research explored common barriers to recycling, the audience most likely to engage with sustainability-focused products, and opportunities to encourage more sustainable habits.</p>
+          <div class="research">
+            <article class="r-card r-barriers">
+              <p class="r-label">Recycling barriers</p>
+              <div class="r-stat"><span class="r-num">~40%</span><span class="r-cap">of Californians recycle properly, according to research I reviewed</span></div>
+              <p>Many people face challenges when trying to recycle correctly:</p>
+              <ul class="r-list">
+                <li>Uncertainty about which materials are recyclable</li>
+                <li>Difficulty locating nearby recycling centers</li>
+              </ul>
+              <p class="r-note">This highlighted a potential opportunity to make recycling information more accessible and actionable.</p>
+            </article>
+            <article class="r-card r-audience">
+              <p class="r-label">Target audience</p>
+              <div class="r-stat"><span class="r-num">18–35</span><span class="r-cap">younger adults, identified as a potential audience</span></div>
+              <p>Understanding their interests and habits could help inform an engaging, accessible approach to encouraging sustainable behavior in a mobile experience.</p>
+            </article>
+            <article class="r-card r-opps">
+              <p class="r-label">Product opportunities</p>
+              <ul class="chips">
+                <li>Gamification</li><li>Personalized goals</li><li>Rewards</li>
+              </ul>
+              <p>Ways to encourage participation and build consistent recycling habits. Potential monetization strategies could also be investigated to support the product's long-term sustainability.</p>
+            </article>
+          </div>
+        </section>
+
+        <!-- 03 · IDEATION -->
+        <section class="nx-sec" id="nx-ideation" aria-labelledby="h-ideation">
+          <h2 class="nx-h" id="h-ideation"><span>03</span>Ideation</h2>
+          <div class="idea">
+            <div class="idea-text">
+              <p class="nx-lede small"><b>EcoLoop</b> aims to make sustainable living more accessible by helping people make eco-friendly decisions in their everyday lives while fostering a connected, environmentally conscious community.</p>
+              <p>The core idea was to integrate AI-powered guidance into daily routines and connect individual actions to collective neighborhood impact. By making sustainable choices easier to understand and act on, EcoLoop could encourage consistent habits and create a positive feedback loop between individuals and their communities.</p>
+            </div>
+            <figure class="loop" aria-label="Feedback loop: individual eco-friendly choices and collective neighborhood impact, connected by AI-powered guidance">
+              <span class="loop-a">Individual<br>eco-friendly choices</span>
+              <div class="loop-core">
+                <svg viewBox="0 0 120 90" aria-hidden="true">
+                  <path d="M8 34 C30 4 90 4 112 34" fill="none" stroke="#6f6d7c" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M104 30 L112 35 L113 26" fill="none" stroke="#6f6d7c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                  <path d="M112 56 C90 86 30 86 8 56" fill="none" stroke="#6f6d7c" stroke-width="1.5" stroke-linecap="round"/>
+                  <path d="M16 60 L8 55 L7 64" fill="none" stroke="#6f6d7c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                <span class="loop-mid">AI-powered<br>guidance</span>
+              </div>
+              <span class="loop-b">Collective<br>neighborhood impact</span>
+            </figure>
+          </div>
+
+          <h3 class="nx-h3">Core features</h3>
+          <ol class="features">
+            <li class="feat">
+              <span class="f-num">01</span>
+              <svg class="f-ic" viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="9" width="24" height="17" rx="3"/><path d="M11 9 l2 -3 h6 l2 3"/><circle cx="16" cy="17.5" r="5"/></svg>
+              <h4>Scan &amp; Identify</h4>
+              <p>Use AI-powered computer vision to identify items and provide guidance on how to recycle or dispose of them properly.</p>
+              <p class="f-link">Responds to: not knowing which materials are recyclable</p>
+            </li>
+            <li class="feat">
+              <span class="f-num">02</span>
+              <svg class="f-ic" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29 C9 20 7 16 7 12 a9 9 0 0 1 18 0 c0 4 -2 8 -9 17Z"/><circle cx="16" cy="12" r="3.2"/></svg>
+              <h4>Location-Aware Guidance</h4>
+              <p>Help users find nearby recycling centers, specialized drop-off locations, and eco-friendly stores through location-based recommendations.</p>
+              <p class="f-link">Responds to: difficulty locating recycling centers</p>
+            </li>
+            <li class="feat">
+              <span class="f-num">03</span>
+              <svg class="f-ic" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 22 V14 a7 7 0 0 1 14 0 V22 l2 3 H7Z"/><path d="M13.5 27 a2.5 2.5 0 0 0 5 0"/></svg>
+              <h4>Proactive Nudges</h4>
+              <p>Offer timely, location-aware reminders about sustainable actions users can take nearby, such as an upcoming electronics recycling drop-off.</p>
+              <p class="f-link">Responds to: building consistent habits</p>
+            </li>
+            <li class="feat">
+              <span class="f-num">04</span>
+              <svg class="f-ic" viewBox="0 0 32 32" aria-hidden="true"><path d="M5 27 H27"/><rect x="7" y="16" width="4" height="9"/><rect x="14" y="10" width="4" height="15"/><rect x="21" y="5" width="4" height="20"/></svg>
+              <h4>Track Your Impact</h4>
+              <p>Provide a personalized dashboard where users can monitor their sustainability efforts, track estimated environmental impact, and earn rewards for participating in eco-friendly activities.</p>
+              <p class="f-link">Responds to: gamification, personalized goals, rewards</p>
+            </li>
+            <li class="feat">
+              <span class="f-num">05</span>
+              <svg class="f-ic" viewBox="0 0 32 32" aria-hidden="true"><circle cx="11" cy="11" r="4"/><circle cx="22" cy="12" r="3.3"/><path d="M3 26 c0 -5 4 -8 8 -8 s8 3 8 8"/><path d="M18 20 c1.5 -1.4 3 -2 4.5 -2 c3.5 0 6.5 2.6 6.5 7"/></svg>
+              <h4>Community &amp; Collective Action</h4>
+              <p>Connect users with local sustainability initiatives and neighborhood activities, turning individual eco-friendly choices into opportunities for collective action.</p>
+              <p class="f-link">Responds to: engaging younger adults together</p>
+            </li>
+          </ol>
+          <p class="nx-fine">These are proposed features of the EcoLoop concept, not a launched product.</p>
+        </section>
+
+        <!-- 04 · DESIGN -->
+        <section class="nx-sec" id="nx-design" aria-labelledby="h-design">
+          <h2 class="nx-h" id="h-design"><span>04</span>Design</h2>
+          <p class="nx-intro">Using <b>Google Stitch</b>, we designed EcoLoop's UX/UI flow with a focus on intuitive navigation and accessibility. Our goal was to make sustainable living easier by helping users identify recyclable items, locate nearby recycling resources, track their progress, and connect with an eco-conscious community.</p>
+
+          <!-- Photo 1: user flow -->
+          <figure class="flow-fig">
+            <figcaption class="fig-cap">User flow</figcaption>
+            <div class="flow">
+              <div class="flow-col">
+                <p class="flow-title"><span>1</span>Input materials</p>
+                <div class="node">
+                  <svg class="n-ic" viewBox="0 0 32 32" aria-hidden="true"><rect x="4" y="9" width="24" height="17" rx="3"/><path d="M11 9 l2 -3 h6 l2 3"/><circle cx="16" cy="17.5" r="5"/></svg>
+                  User takes photo of item (e.g., plastic bottle)</div>
+                <div class="f-down"><span class="f-alt">or manual search</span></div>
+                <div class="node">AI computer vision &amp; material identification</div>
+                <div class="f-down"></div>
+                <div class="node">Item &amp; material type identified</div>
+              </div>
+              <svg class="flow-arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M2 10 H34 M28 4 L35 10 L28 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="flow-col">
+                <p class="flow-title"><span>2</span>Get recycling locations</p>
+                <div class="node key">Location-aware search + Google AI database</div>
+                <div class="f-down"></div>
+                <div class="node soft">Filter by user's current location &amp; direction</div>
+                <div class="f-down"></div>
+                <div class="node soft">Identify nearest specialized recycling centers, bulk stores, etc.</div>
+                <div class="f-down"></div>
+                <div class="node">Display map with eco-friendly locations (hours, accepted items)</div>
+              </div>
+              <svg class="flow-arrow" viewBox="0 0 40 20" aria-hidden="true"><path d="M2 10 H34 M28 4 L35 10 L28 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <div class="flow-col">
+                <p class="flow-title"><span>3</span>View sustainability stats</p>
+                <div class="node key">User profile &amp; dashboard</div>
+                <div class="f-down"></div>
+                <div class="node soft ic"><svg class="n-ic" viewBox="0 0 32 32" aria-hidden="true"><path d="M9 22 V14 a7 7 0 0 1 14 0 V22 l2 3 H7Z"/><path d="M13.5 27 a2.5 2.5 0 0 0 5 0"/></svg>Personal recycling center 0.2 miles accepts old chargers</div>
+                <div class="node soft ic"><svg class="n-ic" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 29 C9 20 7 16 7 12 a9 9 0 0 1 18 0 c0 4 -2 8 -9 17Z"/><circle cx="16" cy="12" r="3.2"/></svg><span><b>Proactive nudge:</b> "Recycling center 0.2 miles accepts old chargers"</span></div>
+                <div class="node soft ic"><svg class="n-ic" viewBox="0 0 32 32" aria-hidden="true"><path d="M12 9 H27 M12 16 H27 M12 23 H27"/><circle cx="6" cy="9" r="1.6"/><circle cx="6" cy="16" r="1.6"/><circle cx="6" cy="23" r="1.6"/></svg>Actionable eco-guidance (hours, accepted items)</div>
+                <div class="node soft ic"><svg class="n-ic" viewBox="0 0 32 32" aria-hidden="true"><circle cx="16" cy="16" r="11"/><path d="M5 16 H27 M16 5 c-4 4 -4 18 0 22 M16 5 c4 4 4 18 0 22"/></svg>Carbon footprint reduction &amp; community stats</div>
+                <div class="node ic"><svg class="n-ic" viewBox="0 0 32 32" aria-hidden="true"><path d="M16 4 l3.5 7.5 8 1 -6 5.5 1.6 8 -7.1 -4 -7.1 4 1.6 -8 -6 -5.5 8 -1Z"/></svg>Badges &amp; rewards for eco-actions</div>
+              </div>
+            </div>
+          </figure>
+
+          <!-- Photo 2: screens, grouped with the features they show -->
+          <div class="d-row">
+            <div class="d-text">
+              <h3 class="nx-h3">Scan &amp; Identify</h3>
+              <p>We designed a scan feature that allows users to take a picture of an item they're unsure how to recycle. EcoLoop uses AI-powered image recognition to identify the item and provide guidance on whether it is recyclable and how it should be disposed of. This feature aims to reduce confusion and make responsible disposal easier in everyday situations.</p>
+            </div>
+            <div class="phones">
+              <div class="ph"><div class="scr cam">
+                <p class="cam-tip">Point your camera at an item to identify it.</p>
+                <div class="viewfinder"><svg viewBox="0 0 40 60" aria-hidden="true"><path d="M16 4 h8 v6 c0 3 6 5 6 12 v30 c0 3 -2 4 -4 4 h-12 c-2 0 -4 -1 -4 -4 v-30 c0 -7 6 -9 6 -12Z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 30 h20 M10 42 h20" stroke="currentColor" stroke-width="1.2"/></svg></div>
+                <div class="cam-bar"><span class="ic-gal"></span><span class="shutter"></span><span class="ic-flash">ϟ</span></div>
+              </div></div>
+              <div class="ph"><div class="scr result">
+                <div class="dimmed"></div>
+                <div class="sheet">
+                  <span class="grab"></span>
+                  <div class="res-row">
+                    <span class="thumb"><svg viewBox="0 0 40 60" aria-hidden="true"><path d="M16 4 h8 v6 c0 3 6 5 6 12 v30 c0 3 -2 4 -4 4 h-12 c-2 0 -4 -1 -4 -4 v-30 c0 -7 6 -9 6 -12Z" fill="#fffaf3" stroke="#6f6d7c" stroke-width="2" stroke-linejoin="round"/></svg></span>
+                    <div><b>Plastic Bottle (PET)</b><small>This is Polyethylene Terephthalate, a common and highly recyclable plastic.</small></div>
+                  </div>
+                  <span class="btn">Find Recycling Options</span>
+                  <span class="btn ghost">Scan Another Item</span>
+                </div>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="d-row flip">
+            <div class="d-text">
+              <h3 class="nx-h3">Recycling Map</h3>
+              <p>We designed a map feature that helps users locate nearby recycling centers, making it easier to find appropriate drop-off locations and take action on recycling information. By connecting users with local resources, the feature bridges the gap between knowing what to recycle and knowing where to take it.</p>
+            </div>
+            <div class="phones">
+              <div class="ph"><div class="scr map">
+                <div class="search"><span class="mag"></span>Search recycling centers, etc.<span class="mic"></span></div>
+                <div class="mapbg">
+                  <span class="pin g" style="left:24%;top:30%"></span>
+                  <span class="pin b" style="left:68%;top:46%"></span>
+                  <span class="pin g" style="left:46%;top:70%"></span>
+                  <span class="locate"></span>
+                </div>
+                <div class="sheet">
+                  <span class="grab"></span>
+                  <b class="sheet-h">Nearby Locations</b>
+                  <div class="loc"><span class="lthumb t1"></span><div><b>GreenLeaf Recycling</b><small>Recycling Center • 0.8 mi away</small></div><i>›</i></div>
+                  <div class="loc"><span class="lthumb t2"></span><div><b>The Zero-Waste Pantry</b><small>Eco-Friendly Store • 1.2 mi away</small></div><i>›</i></div>
+                  <div class="loc"><span class="lthumb t3"></span><div><b>Oak Street Community Garden</b><small>Community Garden • 1.5 mi away</small></div><i>›</i></div>
+                </div>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="d-row">
+            <div class="d-text">
+              <h3 class="nx-h3">Intuitive Navigation</h3>
+              <p>We organized EcoLoop's user flow to make its core features easy to discover and understand. The navigation was designed to help users move between scanning items, exploring recycling locations, tracking achievements, and engaging with the community without unnecessary friction.</p>
+            </div>
+            <div class="phones">
+              <div class="ph"><div class="scr login">
+                <span class="logo-ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M10 13 l4 -6 l3 5 M22 15 l3 6 h-7 M13 24 h-7 l3 -6" fill="none" stroke="#4f6b45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <b class="welcome">Welcome back,<br>Eco-Hero!</b>
+                <small class="lbl">Username/Email</small><span class="inp">Enter your username or email</span>
+                <small class="lbl">Password</small><span class="inp">Enter your password<i class="eye"></i></span>
+                <small class="forgot">Forgot Password?</small>
+                <span class="btn">Log In</span>
+                <small class="or">OR CONTINUE WITH</small>
+                <div class="two"><span class="btn ghost">Google</span><span class="btn ghost">Apple</span></div>
+                <small class="signup">Don't have an account? <u>Sign up</u></small>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="d-row flip">
+            <div class="d-text">
+              <h3 class="nx-h3">Community Hub</h3>
+              <p>We designed a community hub where local groups could host events, organize zero-waste activities, and encourage participation in neighborhood sustainability initiatives. This feature reflects EcoLoop's goal of turning individual sustainable choices into collective community action.</p>
+            </div>
+            <div class="phones">
+              <div class="ph tall"><div class="scr feed">
+                <div class="bar"><b>Community Feed</b><i class="bell"></i></div>
+                <div class="tabs"><span class="on">All</span><span>Restaurants</span><span>Places</span><span>News</span></div>
+                <div class="post">
+                  <div class="who2"><span class="av a1">AJ</span><div><b>Alex Johnson</b><small>5m ago</small></div></div>
+                  <p>Just found this amazing new zero-waste store downtown! They have everything from grains to soaps. Let's support local and sustainable businesses!</p>
+                  <div class="pic jars" aria-hidden="true"></div>
+                  <small class="react">♡ 128 &nbsp; ▢ 42</small>
+                </div>
+                <div class="post">
+                  <div class="who2"><span class="av a2">MG</span><div><b>Maria Garcia</b><small>2h ago</small></div></div>
+                  <p>Hey Ecoloop community! I'm looking for tips on how to start composting in a small apartment. Any advice or product recommendations would be super helpful!</p>
+                  <small class="react">♥ 76 &nbsp; ▢ 19</small>
+                </div>
+                <div class="post">
+                  <div class="who2"><span class="av a3">SC</span><div><b>Sam Chen</b><small>1d ago</small></div></div>
+                  <p>Local Park Clean-Up this Saturday at 10 AM! Gloves and bags will be provided. Let's make our community a cleaner, greener place together. Hope to see you there!</p>
+                  <div class="pic park" aria-hidden="true"></div>
+                  <small class="react">♡ 231 &nbsp; ▢ 58</small>
+                </div>
+                <span class="fab">✎</span>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="d-row">
+            <div class="d-text">
+              <h3 class="nx-h3">Personalized Profile &amp; Achievements</h3>
+              <p>We created a profile page where users could view their achievements and track their progress toward more sustainable habits. This feature was intended to recognize individual efforts and encourage continued engagement.</p>
+            </div>
+            <div class="phones">
+              <div class="ph tall"><div class="scr impact">
+                <div class="bar"><i class="back"></i><b>My Impact</b><i class="gear"></i></div>
+                <div class="pts"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M30 6 C14 6 8 18 10 32 C24 32 34 22 30 6Z" fill="none" stroke="#4f6b45" stroke-width="2"/></svg><b>1,250 pts</b><small>Your Eco Points</small></div>
+                <div class="seg"><span class="on">Week</span><span>Month</span><span>Year</span></div>
+                <div class="card2">
+                  <small>Items Recycled</small><b class="big">34 Items</b><small>This Week <em>+15%</em></small>
+                  <div class="bars"><span style="--h:62%" class="g"></span><span style="--h:30%" class="g"></span><span style="--h:85%" class="b"></span><span style="--h:42%" class="b"></span></div>
+                  <div class="bar-l"><small>Plastic</small><small>Glass</small><small>Paper</small><small>Other</small></div>
+                </div>
+                <div class="card2">
+                  <small>Your Activity</small><b class="big">150 pts</b><small>This Week <em>+22%</em></small>
+                  <svg class="spark-line" viewBox="0 0 140 40" aria-hidden="true"><path d="M2 30 C8 4 12 4 16 26 S24 6 30 22 S40 12 46 18 S54 36 60 26 S70 38 76 34 S84 2 92 8 S100 38 108 30 S118 4 124 14 S132 30 138 10" fill="none" stroke="#7fa0d6" stroke-width="1.6"/></svg>
+                  <div class="bar-l days"><small>Mon</small><small>Tue</small><small>Wed</small><small>Thu</small><small>Fri</small><small>Sat</small><small>Sun</small></div>
+                </div>
+                <b class="sec-h">Carbon Footprint Reduced</b>
+                <div class="card2 c"><small class="co2">CO₂</small><small>CO2 Saved</small><b>15 kg</b></div>
+                <div class="card2 c"><small>Equivalent To</small><b>2 Trees Planted</b></div>
+              </div></div>
+              <div class="ph tall"><div class="scr profile">
+                <div class="bar"><i class="back"></i><b>Profile</b><i class="gear"></i></div>
+                <span class="avatar"></span>
+                <b class="pname">Alex Greene</b>
+                <small class="ptag">Passionate about reducing my carbon footprint!</small>
+                <span class="btn">Edit Profile</span>
+                <div class="stats"><div class="card2"><small>Items Recycled</small><b>1,204</b></div><div class="card2"><small>Eco Points</small><b>8,500</b></div></div>
+                <div class="card2"><small>Community Rank</small><b>#125</b></div>
+                <b class="sec-h">Badges &amp; Achievements</b>
+                <div class="badges">
+                  <span><i class="bd"></i>Recycling Rookie</span><span><i class="bd"></i>Plastic-Free Pioneer</span>
+                  <span><i class="bd"></i>Community Helper</span><span><i class="bd"></i>50-Item Streak</span>
+                  <span class="locked"><i class="bd"></i>Locked</span><span class="locked"><i class="bd"></i>Locked</span>
+                </div>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="upcycle">
+            <svg class="f-ic" viewBox="0 0 32 32" aria-hidden="true"><path d="M8 12 a9 9 0 0 1 16 -3 M24 4 v5 h-5"/><path d="M24 20 a9 9 0 0 1 -16 3 M8 28 v-5 h5"/></svg>
+            <div>
+              <h3 class="nx-h3">Upcycling Feed</h3>
+              <p>We also designed an upcycling feed where users could discover creative ways to repurpose everyday items and learn from others in the community. The feed expands EcoLoop's focus beyond recycling by encouraging resourcefulness, creativity, and the sharing of sustainable practices.</p>
+            </div>
+          </div>
+          <p class="nx-fine">Screens recreated from the EcoLoop designs made in Google Stitch. Names, points, and stats are sample content from those designs.</p>
+        </section>
+
+        <!-- 05 · OUTCOME -->
+        <section class="nx-sec" id="nx-outcome" aria-labelledby="h-outcome">
+          <h2 class="nx-h" id="h-outcome"><span>05</span>Outcome</h2>
+          <div class="outcome">
+            <div class="out-text">
+              <p>Over <b>five weeks</b>, I participated in the Nexus Edge Google AI Micro-Internship, where selected students from California community colleges explored and developed AI-first applications and videos using Google AI Studio.</p>
+              <p>As part of the program, I contributed to the EcoLoop concept, exploring how AI could help address everyday sustainability challenges through accessible recycling guidance, personalized experiences, and community engagement.</p>
+            </div>
+            <div class="out-cards">
+              <article class="present">
+                <svg class="slide-doodle" viewBox="0 0 80 56" aria-hidden="true"><rect x="4" y="4" width="72" height="42" rx="3" fill="#fbf8f3" stroke="#3b3a48" stroke-width="1.4"/><path d="M40 46 v6 M30 54 h20" stroke="#3b3a48" stroke-width="1.4" stroke-linecap="round"/><path d="M14 16 h30 M14 24 h22" stroke="#8f84c8" stroke-width="2" stroke-linecap="round"/><path d="M50 34 l8 -12 8 12Z" fill="#cfdcb8" stroke="#4f6b45" stroke-width="1.2" stroke-linejoin="round"/></svg>
+                <p class="r-label">Final presentation</p>
+                <p>I presented the project during a virtual program meeting, sharing our work and demonstrating how AI-first product concepts could address real-world challenges.</p>
+                <a class="press" href="#presentation" data-route="presentation">Press here to view my presentation <span aria-hidden="true">↗</span></a>
+              </article>
+              <article class="takeaway">
+                <p class="r-label">Key takeaway</p>
+                <p>This experience strengthened my understanding of AI-driven product ideation and UX/UI design, from identifying user needs and exploring potential solutions to translating ideas into an interface concept using Google Stitch.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROJECT: REAL QUEST ============ -->
+  <section class="page nx rq" id="page-rq" data-page="rq" hidden aria-label="Real Quest">
+    <header class="nx-head">
+      <p class="nx-kicker">Project · Product Design × Social Experiences</p>
+      <h1 class="title">Real Quest <svg class="doodle" width="22" height="22" aria-hidden="true"><use href="#star"/></svg></h1>
+      <p class="sub">A new way to make everyday moments more interactive.</p>
+      <p class="rq-attr"><span class="rq-dot" aria-hidden="true"></span>BeReal Product Management Externship</p>
+      <p class="rq-intro">Real Quest is a proposed social feature concept for BeReal that gives friends a new way to connect through weekly guesses, shared experiences, and authentic everyday moments.</p>
+      <ul class="chips rq-process" aria-label="What I did">
+        <li>Product research</li><li>Competitor benchmarking</li><li>Ideation</li><li>User flow &amp; UI prototype</li><li>Participant feedback</li><li>Presented to BeReal's CEO</li>
+      </ul>
+    </header>
+
+    <div class="nx-layout">
+      <nav class="nx-nav" aria-label="Project sections">
+        <ol>
+          <li><button type="button" data-target="rq-problem"><span>01</span>The Problem</button></li>
+          <li><button type="button" data-target="rq-research"><span>02</span>Research</button></li>
+          <li><button type="button" data-target="rq-ideation"><span>03</span>Ideation</button></li>
+          <li><button type="button" data-target="rq-design"><span>04</span>Design</button></li>
+          <li><button type="button" data-target="rq-outcome"><span>05</span>Outcome</button></li>
+        </ol>
+      </nav>
+
+      <div class="nx-body">
+
+        <!-- 01 · THE PROBLEM -->
+        <section class="nx-sec" id="rq-problem" aria-labelledby="h-rq-problem">
+          <h2 class="nx-h" id="h-rq-problem"><span>01</span>The Problem</h2>
+          <div class="problem">
+            <p class="nx-lede">Driving <mark class="scribble">engagement</mark> without losing authenticity.</p>
+            <p class="nx-intro">BeReal encourages users to share authentic, unfiltered moments of their everyday lives. The challenge was to explore how the platform could increase user engagement and monthly active users (MAUs) while staying true to its mission of genuine social connection.</p>
+            <div class="tension" aria-label="The tension: engagement and authenticity">
+              <div class="af-card t-a">
+                <p class="af-label">Grow</p>
+                <p>Increase engagement and monthly active users (MAUs)</p>
+              </div>
+              <span class="t-amp" aria-hidden="true">&amp;</span>
+              <div class="af-card t-b">
+                <p class="af-label">Protect</p>
+                <p>Stay true to BeReal's mission of genuine social connection</p>
+              </div>
+            </div>
+            <p class="t-note">Rather than relying on traditional engagement tactics, I explored opportunities to make the BeReal experience more interactive and give users new reasons to return, connect, and participate.</p>
+          </div>
+        </section>
+
+        <!-- 02 · RESEARCH -->
+        <section class="nx-sec" id="rq-research" aria-labelledby="h-rq-research">
+          <h2 class="nx-h" id="h-rq-research"><span>02</span>Research</h2>
+          <p class="nx-intro">I explored how BeReal encourages daily participation and compared its features with Snapchat to identify opportunities to increase engagement while preserving authentic social connection.</p>
+          <div class="compare">
+            <article class="r-card c-bereal">
+              <p class="r-label">BeReal · building daily habits</p>
+              <ul class="c-feats">
+                <li><b>Daily notification</b><span>Encourages users to capture spontaneous moments within the same two-minute window.</span></li>
+                <li><b>Friends of Friends</b><span>Helps users discover connections and engage with their social circles.</span></li>
+              </ul>
+              <p class="r-note">These mechanics highlight the value of shared moments and daily participation.</p>
+            </article>
+            <span class="c-vs" aria-hidden="true">vs</span>
+            <article class="r-card c-snap">
+              <p class="r-label">Competitor benchmarking · Snapchat</p>
+              <ul class="c-feats">
+                <li><b>Snapstreaks</b><span>Encourage consistent interaction between friends through ongoing daily exchanges.</span></li>
+                <li><b>Stories &amp; Spotlight</b><span>Give users fresh content to discover and share.</span></li>
+                <li><b>Snap Map</b><span>Creates opportunities for location-based discovery and social connection.</span></li>
+              </ul>
+              <p class="r-note">Recurring interactions, content discovery, and shared experiences can create additional reasons for users to open an app.</p>
+            </article>
+          </div>
+          <div class="opp">
+            <p class="r-label">Opportunity</p>
+            <p>Build on BeReal's spontaneous, friend-centered experience by introducing more interactive ways for users to participate together. Rather than relying solely on daily posting, a new feature could give friends another reason to connect and return to the app.</p>
+          </div>
+        </section>
+
+        <!-- 03 · IDEATION -->
+        <section class="nx-sec" id="rq-ideation" aria-labelledby="h-rq-ideation">
+          <h2 class="nx-h" id="h-rq-ideation"><span>03</span>Ideation</h2>
+          <div class="evolve">
+            <article class="ev-card ev-old">
+              <p class="af-label">Where it started</p>
+              <h3 class="nx-h3">Weekly prompts</h3>
+              <p>Prompts shared between friends. At the end of each week, users would reveal their assigned prompts and match them with a BeReal they had captured during the week.</p>
+            </article>
+            <div class="ev-turn">
+              <svg viewBox="0 0 120 40" aria-hidden="true"><path d="M4 26 C30 4 70 36 108 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M99 11 L109 15 L103 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <p>A heavily gamified approach risked distracting from BeReal's emphasis on authentic, everyday moments. Sharing shouldn't feel like a competition or obligation.</p>
+            </div>
+            <article class="ev-card ev-new">
+              <p class="af-label">Where it landed</p>
+              <h3 class="nx-h3">From prompts to guessing</h3>
+              <p>A guessing-based social experience designed to help friends learn more about one another, centered on curiosity, personal discovery, and meaningful interactions between friends.</p>
+            </article>
+          </div>
+          <div class="idea-pair">
+            <div>
+              <p class="r-label">The core idea</p>
+              <p>Real Quest gives friends a new way to engage with each other through playful guessing, adding an interactive layer to BeReal while keeping the focus on genuine social connection.</p>
+            </div>
+            <div>
+              <p class="r-label">Design goal</p>
+              <p>Create a feature that gives users another reason to connect and interact, while preserving the spontaneity and authenticity that make BeReal unique.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 04 · DESIGN -->
+        <section class="nx-sec" id="rq-design" aria-labelledby="h-rq-design">
+          <h2 class="nx-h" id="h-rq-design"><span>04</span>Design</h2>
+          <p class="nx-intro">I translated the Real Quest concept into a user flow and UI prototype designed to make connecting with friends feel natural, interactive, and true to BeReal's emphasis on authenticity.</p>
+
+          <figure class="flow-fig">
+            <figcaption class="fig-cap">User Flow &amp; Interface Design</figcaption>
+            <ol class="loop-flow">
+              <li><span>01</span>Create or join a group</li>
+              <li><span>02</span>Make your guess</li>
+              <li><span>03</span>Reveal &amp; match</li>
+              <li><span>04</span>React &amp; connect</li>
+              <li><span>05</span>Start a new quest</li>
+            </ol>
+            <p class="lf-back"><svg viewBox="0 0 26 16" aria-hidden="true"><path d="M24 4 C24 12 10 14 3 9 M8 4 L3 9 L9 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>repeats every week</p>
+          </figure>
+
+          <!-- 01 -->
+          <div class="d-row">
+            <div class="d-text">
+              <p class="step-n">01</p>
+              <h3 class="nx-h3">Create or Join a Group</h3>
+              <p>Users can create a group or join an existing one directly from the home page. Groups serve as a shared space where friends can participate in weekly quests together.</p>
+            </div>
+            <div class="phones">
+              <div class="ph tall dkph"><div class="scr dk">
+                <div class="dk-top"><b class="br">BeReal.</b><span class="dk-ic"><i class="ic-send"></i></span><span class="dk-ic"><i class="ic-bell"></i></span></div>
+                <div class="dk-tabs"><b>My Friends</b><span>Friends of Friends</span></div>
+                <div class="dk-card c">
+                  <span class="gold"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 l2.6 5.6 6 .7 -4.5 4.1 1.2 6 -5.3 -3 -5.3 3 1.2 -6 -4.5 -4.1 6 -.7Z" fill="#1d1a14"/></svg></span>
+                  <b class="dk-h">Meet Real Quest</b>
+                  <small>A new way to see your friends in real life.</small>
+                  <ul class="dk-list">
+                    <li><i class="ic-cam"></i><span><b>Make real guesses</b><small>about what your friends will do.</small></span></li>
+                    <li><i class="ic-lock"></i><span><b>They won't see it</b><small>until Sunday.</small></span></li>
+                    <li><i class="ic-ppl"></i><span><b>Reveal and match</b><small>with posts together.</small></span></li>
+                  </ul>
+                  <span class="dk-btn">Try Real Quest</span>
+                  <u class="dk-link">Maybe later</u>
+                </div>
+                <div class="dk-photo sky"></div>
+                <div class="dk-tabbar"><span class="on">Home</span><span>Friends</span><span class="cam-b"></span><span>Memories</span><span><i class="av-j">J</i>Profile</span></div>
+              </div></div>
+              <div class="ph tall dkph"><div class="scr dk">
+                <div class="dk-nav"><i>‹</i><b>Real Quest</b><em class="beta">BETA</em></div>
+                <b class="dk-big">Your Real Quest Groups</b>
+                <small>Choose a group to make a Real Guess.</small>
+                <div class="grp"><span class="stack"><i class="g1">M</i><i class="g2">P</i><i class="g3">Z</i><i class="g4">A</i></span><span><b>Chill Girls</b><small>5 members</small></span><i class="chev">›</i></div>
+                <div class="grp"><span class="stack"><i class="g5">T</i><i class="g6">S</i><i class="g7">J</i></span><span><b>Roomies</b><small>4 members</small></span><i class="chev">›</i></div>
+                <div class="grp"><span class="stack"><i class="g5">T</i><i class="g8">M</i></span><span><b>Gym Buddies</b><small>3 members</small></span><i class="chev">›</i></div>
+                <div class="grp"><span class="stack"><i class="g9">M</i><i class="g10">D</i><i class="g2">S</i></span><span><b>Family</b><small>4 members</small></span><i class="chev">›</i></div>
+                <div class="grp new">+ Create a new group</div>
+              </div></div>
+            </div>
+          </div>
+
+          <!-- 02 -->
+          <div class="d-row flip">
+            <div class="d-text">
+              <p class="step-n">02</p>
+              <h3 class="nx-h3">Make Your Guess</h3>
+              <p>Within a group, users select a friend and submit a guess about what that person will do during the week. Guesses remain hidden until the end of the week, building curiosity and anticipation around what friends predict about one another.</p>
+            </div>
+            <div class="phones">
+              <div class="ph tall dkph"><div class="scr dk">
+                <div class="dk-nav"><i>‹</i><b>Real Quest</b><em class="beta">BETA</em></div>
+                <b class="dk-big">Make a real guess of what your friends are going to do during the week!</b>
+                <div class="dk-card">
+                  <small class="caps">SEND TO</small>
+                  <div class="sel"><i class="g5">T</i><b>Theo</b><i class="chev">⌄</i></div>
+                  <div class="ta">You will bake a cake!<small>21/80</small></div>
+                </div>
+                <small class="lock-note"><i class="ic-lock sm"></i>Let's see if you predicted the future right this Sunday. 👀</small>
+                <span class="dk-btn">Submit Real Guess</span>
+              </div></div>
+              <div class="ph tall dkph"><div class="scr dk center">
+                <div class="dk-nav plain"><b>Real Quest</b><em class="beta">BETA</em></div>
+                <div class="mid">
+                  <span class="gold big"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12.5 l4 4 8 -9" fill="none" stroke="#1d1a14" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                  <b class="dk-h">Guess locked in!</b>
+                  <small>Theo won't know what you guessed until Sunday.</small>
+                  <span class="pill"><i class="ic-cal"></i>Reveals this Sunday</span>
+                  <small class="dim">No pressure — just wait for the moment.</small>
+                  <span class="dk-btn">Back to BeReal</span>
+                  <u class="dk-link">View Real Quest</u>
+                </div>
+              </div></div>
+            </div>
+          </div>
+
+          <!-- 03 -->
+          <div class="d-row">
+            <div class="d-text">
+              <p class="step-n">03</p>
+              <h3 class="nx-h3">Reveal &amp; Match</h3>
+              <p>At the end of the week, the group reveals its guesses. Friends can then match their predictions with BeReals taken throughout the week, seeing how closely their guesses align with each other's everyday experiences.</p>
+            </div>
+            <div class="phones">
+              <div class="ph tall dkph"><div class="scr dk">
+                <div class="dk-top"><b class="br">BeReal.</b><span class="dk-ic"><i class="ic-send"></i></span><span class="dk-ic"><i class="ic-bell"></i></span></div>
+                <div class="dk-tabs"><b>My Friends</b><span>Friends of Friends</span></div>
+                <div class="dk-card">
+                  <div class="sub-row"><i class="g5 lg">T</i><span><b>Real Quest submitted</b><small>Theo • Gym Buddies</small><small>🔒 Compare Sunday — tap to peek</small></span><i class="chev">›</i></div>
+                  <div class="count"><span><b>0</b><small>DAYS</small></span><span><b>0</b><small>HOURS</small></span><span><b>00</b><small>MINS</small></span><span><b>00</b><small>SECS</small></span></div>
+                </div>
+                <div class="dk-photo sky tall2">
+                  <b class="hey">Hey Jenica</b>
+                  <small>Are you ready? It's time to BeReal. Save this moment and share it with your friends.</small>
+                  <span class="dk-btn">Post your first BeReal.</span>
+                </div>
+                <div class="dk-tabbar"><span class="on">Home</span><span>Friends</span><span class="cam-b"></span><span>Memories</span><span><i class="av-j">J</i>Profile</span></div>
+              </div></div>
+              <div class="ph tall dkph"><div class="scr dk">
+                <div class="dk-nav"><i>‹</i><b>Real Quest</b><i class="more">⋯</i></div>
+                <span class="banner">🔔 Your Real Quest is ready 👀</span>
+                <b class="dk-h c">Reveal time.</b>
+                <small class="c">See if your guess about Theo was right this week.</small>
+                <div class="dk-card">
+                  <div class="sub-row"><i class="g5 lg">T</i><span><b>Your guess about Theo:</b><small>"You will bake a cake!"</small></span></div>
+                  <div class="post-img"><span class="inset"></span><span class="react-chip">♥ 5 friends reacted</span></div>
+                  <small>React with a RealMoji</small>
+                  <div class="emoji">😍 😂 😮 😢 🔥</div>
+                </div>
+              </div></div>
+            </div>
+          </div>
+
+          <!-- 04 -->
+          <div class="d-row flip">
+            <div class="d-text">
+              <p class="step-n">04</p>
+              <h3 class="nx-h3">React &amp; Connect</h3>
+              <p>After the reveal, friends can chat about their guesses, exchange RealMojis, and react to each other's matches. These interactions create opportunities for conversation, laughter, and discovering how well friends know one another.</p>
+            </div>
+            <div class="phones">
+              <div class="ph tall dkph"><div class="scr dk">
+                <div class="dk-nav"><i>‹</i><b>Real Quest</b></div>
+                <span class="banner">✨ This week's recap</span>
+                <b class="dk-big sm">Here's how your guesses turned out</b>
+                <div class="recap"><span><b><i class="g5">T</i>Your guess about Theo:</b><small>"You will bake a cake!"</small><em>😍😂😢</em></span><span class="thumb2 r1"><i></i><b>Matched!</b></span></div>
+                <div class="recap"><span><b><i class="g2">P</i>Priya's guess about you:</b><small>"You'd spend the weekend at the beach"</small><em>😍😂😢</em></span><span class="thumb2 r2"><i></i><b>Matched!</b></span></div>
+                <div class="recap"><span><b><i class="g5">T</i>Theo's guess about Maya:</b><small>"She'd go out with friends"</small><em>😍😂😢</em></span><span class="thumb2 r3"><i></i><b>Close enough</b></span></div>
+              </div></div>
+            </div>
+          </div>
+
+          <!-- 05 -->
+          <div class="d-row">
+            <div class="d-text">
+              <p class="step-n">05</p>
+              <h3 class="nx-h3">Start a New Quest</h3>
+              <p>Once the weekly round wraps up, the cycle begins again with new guesses and opportunities to connect. The recurring format gives friends a reason to revisit the experience without changing BeReal's focus on sharing authentic moments.</p>
+            </div>
+            <div class="phones">
+              <div class="ph tall dkph"><div class="scr dk">
+                <div class="dk-nav"><i>‹</i><b>Real Quest</b></div>
+                <div class="recap"><span><b><i class="g5">T</i>Your guess about Theo:</b><small>"You will bake a cake!"</small><em>😍😂😢</em></span><span class="thumb2 r1"><i></i><b>Matched!</b></span></div>
+                <div class="recap"><span><b><i class="g2">P</i>Priya's guess about you:</b><small>"You'd spend the weekend at the beach"</small><em>😍😂😢</em></span><span class="thumb2 r2"><i></i><b>Matched!</b></span></div>
+                <div class="recap"><span><b><i class="g5">T</i>Theo's guess about Maya:</b><small>"She'd go out with friends"</small><em>😍😂😢</em></span><span class="thumb2 r3"><i></i><b>Close enough</b></span></div>
+                <div class="dk-card c week">
+                  <b>✨ Week complete!</b>
+                  <small>See you next Sunday.</small>
+                  <span class="dk-btn">Start Next Week's Quest</span>
+                </div>
+                <div class="dk-tabbar"><span>Home</span><span>Friends</span><span class="cam-b"></span><span>Memories</span><span class="on"><i class="av-j">J</i>Profile</span></div>
+              </div></div>
+            </div>
+          </div>
+
+          <div class="upcycle rq-goal">
+            <svg class="f-ic" viewBox="0 0 32 32" aria-hidden="true"><circle cx="11" cy="11" r="4"/><circle cx="22" cy="12" r="3.3"/><path d="M3 26 c0 -5 4 -8 8 -8 s8 3 8 8"/><path d="M18 20 c1.5 -1.4 3 -2 4.5 -2 c3.5 0 6.5 2.6 6.5 7"/></svg>
+            <div>
+              <h3 class="nx-h3">Design goal</h3>
+              <p>The experience was designed to introduce a new way for friends to interact while keeping BeReal's everyday posts at the center. By combining hidden predictions, weekly reveals, and familiar social interactions, Real Quest turns ordinary moments into opportunities for connection.</p>
+            </div>
+          </div>
+          <p class="nx-fine">Screens recreated from my Real Quest prototype. Names and posts are sample content from the prototype.</p>
+        </section>
+
+        <!-- 05 · OUTCOME -->
+        <section class="nx-sec" id="rq-outcome" aria-labelledby="h-rq-outcome">
+          <h2 class="nx-h" id="h-rq-outcome"><span>05</span>Outcome</h2>
+          <div class="outcome">
+            <div class="out-text">
+              <p>I developed a prototype of Real Quest and presented the concept to BeReal CEO Ben Moore during an externship meeting. The feedback highlighted the potential for Real Quest to strengthen BeReal's focus on close friendships and authentic social connections.</p>
+            </div>
+
+            <blockquote class="ceo">
+              <p class="r-label">Feedback from BeReal</p>
+              <p class="ceo-q">A promising direction for the product team to explore, with a focus on the relationships between close friends on BeReal.</p>
+              <footer>Summary of feedback from <b>Ben Moore</b>, CEO of BeReal. He particularly appreciated how Real Quest connected to the platform's identity as a space for genuine social sharing.</footer>
+            </blockquote>
+
+            <div class="survey">
+              <div class="sv-head">
+                <p class="r-label">User feedback · focus group survey</p>
+                <p>To evaluate the concept, I surveyed 8 participants across different usage levels. It was a small, exploratory sample, not representative of all BeReal users.</p>
+              </div>
+              <div class="sv-stats">
+                <div class="stat-tile">
+                  <b>8</b><span>participants</span>
+                  <small>4 frequent users · 2 occasional users · 2 non-users</small>
+                </div>
+                <div class="stat-tile">
+                  <b>8 of 8</b><span>said yes</span>
+                  <small>to "Would you like to see Real Quest added to BeReal?"</small>
+                </div>
+                <div class="stat-tile hl">
+                  <b>5 of 8 · 62.5%</b><span>rated it 5 of 5</span>
+                  <small>for "How authentic does Real Quest feel as a feature for BeReal?"</small>
+                </div>
+              </div>
+              <figure class="sv-chart">
+                <figcaption>How authentic does Real Quest feel as a feature for BeReal? <small>8 responses, rated 1 (low) to 5 (high)</small></figcaption>
+                <div class="bars5" role="img" aria-label="Authenticity ratings: 1, 0 responses; 2, 0; 3, 1 (12.5%); 4, 2 (25%); 5, 5 (62.5%)">
+                  <div class="b5" style="--v:0" title="Rating 1: 0 responses (0%)"><em>0</em><i></i><span>1</span></div>
+                  <div class="b5" style="--v:0" title="Rating 2: 0 responses (0%)"><em>0</em><i></i><span>2</span></div>
+                  <div class="b5" style="--v:1" title="Rating 3: 1 response (12.5%)"><em>1 · 12.5%</em><i></i><span>3</span></div>
+                  <div class="b5" style="--v:2" title="Rating 4: 2 responses (25%)"><em>2 · 25%</em><i></i><span>4</span></div>
+                  <div class="b5" style="--v:5" title="Rating 5: 5 responses (62.5%)"><em>5 · 62.5%</em><i></i><span>5</span></div>
+                </div>
+              </figure>
+              <div class="sv-goals">
+                <p class="r-label">What the survey set out to test</p>
+                <ul>
+                  <li>Whether people understand the idea</li>
+                  <li>Whether the weekly guess feels motivating</li>
+                  <li>Whether the reveal creates a reason to return</li>
+                </ul>
+              </div>
+              <div class="quotes">
+                <blockquote>“If I have friends who use BeReal often, I would make a Real Quest with them. It seems fun and authentic.”</blockquote>
+                <blockquote>“It is a really cute idea and matches the aesthetic of BeReal and the meaning.”</blockquote>
+                <blockquote>“I like that it also adds on to the chat features that you said aren't as used on BeReal; it really adds to the authentic feel.”</blockquote>
+              </div>
+            </div>
+
+            <div class="out-cards">
+              <article class="present rq-try">
+                <svg class="slide-doodle" viewBox="0 0 80 56" aria-hidden="true"><rect x="22" y="2" width="36" height="52" rx="7" fill="#1d1c22" stroke="#3b3a48" stroke-width="1.4"/><rect x="26" y="8" width="28" height="38" rx="3" fill="#2a2930"/><circle cx="40" cy="22" r="6" fill="#efc560"/><path d="M33 32 h14 M35 37 h10" stroke="#9a98a6" stroke-width="2" stroke-linecap="round"/></svg>
+                <p class="r-label">Interactive prototype</p>
+                <p>Explore the prototype and experience how Real Quest brings friends together through weekly guesses.</p>
+                <a class="press" href="https://jenicat27.github.io/bereal-product-prototype/" target="_blank" rel="noopener">Press here to try the Real Quest prototype <span aria-hidden="true">↗</span></a>
+              </article>
+              <article class="takeaway">
+                <p class="r-label">Key takeaway</p>
+                <p>This experience strengthened my ability to translate user research and competitive insights into a product concept, prototype an interactive experience, and gather feedback to evaluate its alignment with a product's core values.</p>
+                <p class="tk-small">Real Quest explored how a new social feature could encourage users to engage with their close friends while preserving the authentic, everyday interactions that make BeReal distinctive.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PRESENTATION ============ -->
+  <section class="page" id="page-presentation" data-page="presentation" hidden aria-label="Final presentation">
+    <p class="nx-kicker">Nexus Edge — Google AI Micro-Intern</p>
+    <h1 class="title">Final Presentation <svg class="doodle" width="22" height="22" aria-hidden="true"><use href="#star"/></svg></h1>
+    <p class="sub">EcoLoop, presented during a virtual program meeting.</p>
+    <div class="deck-frame">
+      <div class="deck-inner">
+        <svg class="slide-doodle" viewBox="0 0 80 56" aria-hidden="true"><rect x="4" y="4" width="72" height="42" rx="3" fill="#fbf8f3" stroke="#3b3a48" stroke-width="1.4"/><path d="M40 46 v6 M30 54 h20" stroke="#3b3a48" stroke-width="1.4" stroke-linecap="round"/><path d="M14 16 h30 M14 24 h22" stroke="#8f84c8" stroke-width="2" stroke-linecap="round"/><path d="M50 34 l8 -12 8 12Z" fill="#cfdcb8" stroke="#4f6b45" stroke-width="1.2" stroke-linejoin="round"/></svg>
+        <p class="deck-msg">The slides will appear here.</p>
+        <a class="press" href="https://nexusedge.com/GoogleAI" target="_blank" rel="noopener">View on Nexus Edge <span aria-hidden="true">↗</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ EXPERIENCE ============ -->
+  <section class="page" id="page-experience" data-page="experience" hidden aria-label="Experience">
+    <h1 class="title">Experience <svg class="doodle" width="22" height="22" aria-hidden="true"><use href="#star"/></svg></h1>
+    <p class="sub">My journey so far.</p>
+    <div class="timeline" id="timeline"></div>
+    <div class="detail" id="expDetail" aria-live="polite"></div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section class="page contact" id="page-contact" data-page="contact" hidden aria-label="Contact">
+    <svg class="env" viewBox="0 0 240 160" aria-hidden="true">
+      <g stroke="#3b3a48" stroke-width="1.3" stroke-linecap="round" fill="none" opacity=".7">
+        <path d="M14 30 l-10 -6 M8 60 h-8 M226 34 l10 -7 M232 64 h8 M30 8 l4 6 M208 10 l-4 6"/>
+      </g>
+      <path d="M40 40 L200 40 L200 140 L40 140Z" fill="#f4ede3" stroke="#cfc1b0"/>
+      <path d="M40 140 L120 86 L200 140Z" fill="#ece3d7" stroke="#cfc1b0"/>
+      <path d="M40 40 L40 140 L100 92Z" fill="#f8f2ea" stroke="#cfc1b0"/>
+      <path d="M200 40 L200 140 L140 92Z" fill="#e7ddcf" stroke="#cfc1b0"/>
+      <path d="M40 40 L120 100 L200 40Z" fill="#fbf7f1" stroke="#cfc1b0"/>
+      <path d="M120 84 C112 78 108 72 111 68 C114 64 118 66 120 69 C122 66 126 64 129 68 C132 72 128 78 120 84Z" fill="none" stroke="#3b3a48" stroke-width="1.3"/>
+    </svg>
+    <h1>Let's create something together.</h1>
+    <p class="sub">Feel free to reach out!</p>
+    <div class="links" id="links"></div>
+    <div class="addr" id="addr"></div>
+  </section>
+</main>
+
+<footer class="foot"><span>Same you, just unfolded. ♡</span></footer>
+<div class="veil" id="veil" aria-hidden="true"></div>
+
+<script>
+(() => {
+  /* ---- content (edit these) ---- */
+  const CONTACT = {
+    email: "jenicatalaba06@gmail.com",
+    linkedin: "https://www.linkedin.com/in/jenica-talaba-aa607839b"
+  };
+  /* Projects. A project has one or more sections; each section is its own mini case study.
+     "Nexus Edge – Google AI Micro-Intern" holds the Nexus Edge work plus the EcoLoop study as a subsection. */
+  const ICON = {
+    eco: '<path d="M30 6 C14 6 8 18 10 32 C24 32 34 22 30 6Z" fill="#e4ecd2" stroke="#4f6b45" stroke-width="1.5" stroke-linejoin="round"/><path d="M10 34 C16 24 22 18 28 12" fill="none" stroke="#4f6b45" stroke-width="1.5" stroke-linecap="round"/>',
+    rq: '<path d="M9 14 C9 11 11 10 14 10 H26 C29 10 31 11 31 14 L34 26 C35 30 31 31 29 28 L26 24 H14 L11 28 C9 31 5 30 6 26Z" fill="#f8e0e0" stroke="#7a4b4b" stroke-width="1.5" stroke-linejoin="round"/><path d="M14 15 v6 M11 18 h6" stroke="#7a4b4b" stroke-width="1.5" stroke-linecap="round"/><circle cx="25" cy="16" r="1.4" fill="#7a4b4b"/><circle cx="28" cy="19" r="1.4" fill="#7a4b4b"/>',
+    nx: '<path d="M18 4 C19 13 21 15 30 16 C21 17 19 19 18 28 C17 19 15 17 6 16 C15 15 17 13 18 4Z" fill="#e6e1f6" stroke="#5c5491" stroke-width="1.5" stroke-linejoin="round"/><path d="M30 24 C30.5 28 31.5 29 35 29.5 C31.5 30 30.5 31 30 35 C29.5 31 28.5 30 25 29.5 C28.5 29 29.5 28 30 24Z" fill="#e6e1f6" stroke="#5c5491" stroke-width="1.3" stroke-linejoin="round"/>'
+  };
+  const PROJECTS = [
+    { id:"realquest", name:"Real Quest", tag:"Product Design × Social", bg:"var(--rose)", icon:ICON.rq,
+      blurb:"A weekly social prediction experience designed for BeReal.",
+      sections:[
+        { name:"Real Quest", tag:"Product Design × Social", icon:ICON.rq, accent:"#efc5c5", accent2:"#d98b8b",
+          summary:"Real Quest is a weekly prediction game that gives friends on BeReal a light, playful reason to check in with each other.",
+          steps:[
+            ["The Problem","Friend groups post daily, but conversation around the posts stays thin."],
+            ["Research","Looked at what makes social games stick: short rounds, low effort, and something to talk about afterwards."],
+            ["Ideation","Explored weekly prompts where friends predict each other's answers before the reveal."],
+            ["Design","Designed the prediction flow, the reveal moment, and a weekly recap card."],
+            ["Outcome","A concept and prototype that adds a weekly social ritual without changing BeReal's core."]
+          ]}
+      ]}
+  ];
+  const EXPERIENCE = [
+    { yr:"2025", org:"Nexus Edge", role:"Google AI Micro-Intern · incl. EcoLoop study", title:"Nexus Edge – Google AI Micro-Intern", bg:"var(--sky)",
+      text:"Short-term project exploring how AI can be applied to real product problems. EcoLoop study (AI × Sustainability): Designed EcoLoop end to end, from research to a tested prototype. See the full case study under Projects." },
+    { yr:"2026", org:"BeReal", role:"Product Management Extern", bg:"var(--mint)",
+      text:"Product management externship: worked through user research, feature thinking, and product strategy for a social app." },
+    { yr:"2026–2028", org:"UC San Diego", role:"Cognitive Science", bg:"var(--sky)",
+      text:"Studying Cognitive Science with a focus on how people think, learn, and interact with technology." }
+  ];
+
+  const $ = s => document.querySelector(s);
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)");
+  const root = document.documentElement;
+  const tellerWrap = $("#tellerWrap"), teller = $("#teller"), veil = $("#veil");
+  const SOFT = { about:"--about-3", projects:"--proj-3", experience:"--exp-3", contact:"--con-3" };
+  let current = null, busy = false, caseId = "realquest", step = 0;
+
+  /* ---- render static lists ---- */
+  /* Cards on the Projects page. Only the card copy lives here; each card opens an existing case study
+     (case studies are unchanged). EcoLoop opens its subsection inside the Nexus Edge case study. */
+  const CARDS = [
+    { project:"nexusedge", step:5, name:"EcoLoop", tag:"AI × Sustainability × Product Design", bg:"var(--sage)", icon:ICON.eco,
+      blurb:"Making sustainable choices feel more approachable.",
+      context:"A sustainability-focused app concept developed within my Nexus Edge — Google AI Micro-Internship project." },
+    { project:"realquest", step:0, name:"Real Quest", tag:"Product Design × Social Experiences", bg:"var(--rose)", icon:ICON.rq,
+      blurb:"A new way to make everyday moments more interactive.",
+      context:"A weekly social prediction experience concept developed during my BeReal Product Management Externship." }
+  ];
+  $("#cards").innerHTML = CARDS.map(c => `
+    <button class="card" type="button" data-project="${c.project}" data-step="${c.step}" style="--bg:${c.bg}">
+      <svg class="ic" viewBox="0 0 40 40" aria-hidden="true">${c.icon}</svg>
+      <h3>${c.name}</h3><p class="tag">${c.tag}</p><p>${c.blurb}</p>
+      <p class="inc"><b>Project context</b>${c.context}</p>
+      <span class="go" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6h8M7 3l3 3-3 3" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+    </button>`).join("");
+  $("#cards").style.setProperty("--n", CARDS.length);
+  $("#timeline").style.setProperty("--n", EXPERIENCE.length);
+  $("#cards").addEventListener("click", e => {
+    const b = e.target.closest("[data-project]"); if (!b) return;
+    caseId = b.dataset.project; step = +b.dataset.step || 0; go("project-" + caseId);
+  });
+
+  $("#timeline").innerHTML = EXPERIENCE.map((x,i) => `
+    <button class="note" type="button" data-i="${i}" aria-expanded="false" style="--bg:${x.bg}">
+      <span class="yr">${x.yr}</span><b>${x.org}</b><small>${x.role}</small><span class="dot"></span>
+    </button>`).join("");
+  const showExp = i => {
+    document.querySelectorAll(".note").forEach((n,j) => n.setAttribute("aria-expanded", String(i===j)));
+    const x = EXPERIENCE[i];
+    const d = $("#expDetail");
+    d.innerHTML = `<h3>${x.title || x.org}</h3><p class="meta">${x.role} · ${x.yr}</p><p>${x.text}</p>`;
+    d.classList.remove("case-panel","flip"); void d.offsetWidth; d.classList.add("case-panel","flip");
+  };
+  $("#timeline").addEventListener("click", e => { const n = e.target.closest(".note"); if (n) showExp(+n.dataset.i); });
+  showExp(0);
+
+  const ico = {
+    mail:'<svg viewBox="0 0 34 34" aria-hidden="true"><rect x="4" y="8" width="26" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 9 L17 19 L30 9" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/></svg>',
+    li:'<svg viewBox="0 0 34 34" aria-hidden="true"><rect x="5" y="5" width="24" height="24" rx="4" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 15v9M11 11v.5M16 24v-9M16 19c0-3 2-4 4-4s3 1.5 3 4v5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>',
+    doc:'<svg viewBox="0 0 34 34" aria-hidden="true"><path d="M9 4h11l6 6v20H9Z M20 4v6h6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M13 16h9M13 20h9M13 24h6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>'
+  };
+  $("#links").innerHTML = `
+    <a href="mailto:${CONTACT.email}" id="emailBtn">${ico.mail}<span>Email</span></a>
+    <a href="${CONTACT.linkedin}" target="_blank" rel="noopener">${ico.li}<span>LinkedIn</span></a>`;
+  /* the address is always shown as selectable text; clicking Email opens the mail app where possible and copies it */
+  $("#addr").textContent = CONTACT.email;
+  $("#emailBtn").addEventListener("click", () => {
+    const a = $("#addr");
+    if (navigator.clipboard) navigator.clipboard.writeText(CONTACT.email).then(
+      () => { a.textContent = CONTACT.email + "  ·  copied"; }, () => {});
+  });
+
+  /* ---- case study ---- */
+  const flatSteps = p => p.sections.flatMap((sec, si) => sec.steps.map((st, i) => ({ sec, si, i, st })));
+  function renderCase(animate){
+    const p = PROJECTS.find(x => x.id === caseId) || PROJECTS[0];
+    const flat = flatSteps(p); step = Math.min(step, flat.length - 1);
+    const cur = flat[step], sec = cur.sec, multi = p.sections.length > 1;
+    const page = $("#page-case");
+    page.style.setProperty("--accent", sec.accent); page.style.setProperty("--accent2", sec.accent2);
+    $("#caseHead").innerHTML = `${p.name} <span>– Case Study</span>`;
+    $("#caseOverview").textContent = p.overview || ""; $("#caseOverview").hidden = !p.overview;
+    let k = 0;
+    $("#steps").innerHTML = p.sections.map((s2, si) =>
+      (multi ? `<li class="grp">${s2.label}</li>` : "") +
+      s2.steps.map((st, i) => { const idx = k++;
+        return `<li><button type="button" data-step="${idx}" ${idx===step?'aria-current="step"':''}><span class="n">${String(i+1).padStart(2,"0")}</span>${st[0]}</button></li>`; }).join("")
+    ).join("");
+    const panel = $("#casePanel");
+    panel.innerHTML = `${multi ? `<p class="eyebrow">${sec.label}</p>` : ""}
+      <h2>${sec.name} <svg width="22" height="22" viewBox="0 0 40 40" aria-hidden="true">${sec.icon}</svg></h2>
+      <p class="tag">${sec.tag}</p><p>${sec.summary}</p>
+      <h3>${String(cur.i+1).padStart(2,"0")} · ${cur.st[0]}</h3><p>${cur.st[1]}</p>`;
+    const nxt = flat[step+1];
+    $("#nextStep span").textContent = !nxt ? "all projects" : (nxt.si !== cur.si ? `next: ${nxt.sec.name}` : "next");
+    if (animate){ panel.classList.remove("flip"); void panel.offsetWidth; panel.classList.add("flip"); }
+  }
+  $("#steps").addEventListener("click", e => { const b = e.target.closest("[data-step]"); if (b){ step = +b.dataset.step; renderCase(true); }});
+  $("#nextStep").addEventListener("click", () => {
+    const p = PROJECTS.find(x => x.id === caseId);
+    if (step < flatSteps(p).length-1){ step++; renderCase(true); } else go("projects");
+  });
+
+  /* ---- routing ---- */
+  const routeOf = h => {
+    h = (h || "").replace(/^#/, "");
+    if (h === "project-ecoloop" || h === "project-nexusedge") return "project-nexusedge";
+    if (h === "presentation") return h;
+    if (h.startsWith("project-") && PROJECTS.some(p => "project-"+p.id === h)) return h;
+    return ["about","projects","experience","contact"].includes(h) ? h : "home";
+  };
+  function show(route, opts = {}){
+    const pageKey = route === "project-nexusedge" ? "nexus" : route === "project-realquest" ? "rq" : route.startsWith("project-") ? "case" : route;
+    if (pageKey === "case"){ const id = route.slice(8); if (id !== caseId){ caseId = id; step = 0; } renderCase(false); }
+    document.querySelectorAll(".page").forEach(s => { s.hidden = s.dataset.page !== pageKey; s.classList.remove("enter"); });
+    const el = $("#page-" + pageKey);
+    if (!opts.instant && !reduce.matches && current !== null){ void el.offsetWidth; el.classList.add("enter"); }
+    const inProjects = ["case","nexus","rq","presentation"].includes(pageKey);
+    document.body.dataset.page = inProjects ? "projects" : pageKey;
+    $("#backLabel").textContent = pageKey === "presentation" ? "Back to project" : ["case","nexus","rq"].includes(pageKey) ? "Back to projects" : "Back to folds";
+    const navKey = inProjects ? "projects" : pageKey;
+    document.querySelectorAll(".nav a").forEach(a => {
+      if (a.dataset.route === navKey) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");
+    });
+    if (pageKey === "home" && current !== null && current !== "home" && !reduce.matches) refold();
+    current = route;
+    if (!opts.keepScroll) window.scrollTo(0,0);
+  }
+  function go(route, opts){
+    try { if (location.hash.slice(1) !== route) history.pushState(null, "", "#" + route); } catch(e){}
+    show(route, opts);
+  }
+  addEventListener("popstate", () => show(routeOf(location.hash)));
+  addEventListener("hashchange", () => { const r = routeOf(location.hash); if (r !== current) show(r); });
+
+  /* fortune teller folds closed again when you come back */
+  function refold(){
+    tellerWrap.classList.add("reset"); teller.classList.add("no-anim","opening");
+    tellerWrap.style.transform = "scale(1.12)"; tellerWrap.style.opacity = "0";
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      tellerWrap.classList.remove("reset"); teller.classList.remove("no-anim");
+      tellerWrap.style.transition = "transform .45s cubic-bezier(.2,.8,.2,1), opacity .3s ease";
+      tellerWrap.style.transform = ""; tellerWrap.style.opacity = "";
+      teller.classList.remove("opening");
+      setTimeout(() => { tellerWrap.style.transition = ""; }, 480);
+    }));
+  }
+
+  /* ---- the signature interaction: open the fold, zoom in, arrive ---- */
+  function openFold(route){
+    if (busy) return;
+    if (reduce.matches){ go(route); return; }
+    busy = true;
+    const flap = teller.querySelector(`.flap[data-route="${route}"]`);
+    const k = SOFT[route].slice(0,-2);   // e.g. "--proj"
+    root.style.setProperty("--sel-soft", `var(${k}-3)`);
+    root.style.setProperty("--sel-1", `var(${k}-1)`);
+    root.style.setProperty("--sel-2", `var(${k}-2)`);
+    root.classList.add("busy");
+    teller.querySelectorAll(".flap").forEach(f => f.classList.toggle("sel", f === flap));
+    teller.classList.add("opening");                               // 1–2: flap lifts out, fold parts to show the inside
+    setTimeout(() => tellerWrap.classList.add("zooming"), 140);   // 3: zoom into the opening
+    setTimeout(() => veil.classList.add("on"), 480);              // the pocket fills the screen
+    setTimeout(() => {                                            // 4: arrive on the page
+      tellerWrap.classList.add("reset"); tellerWrap.classList.remove("zooming");
+      teller.classList.add("no-anim"); teller.classList.remove("opening");
+      flap && flap.classList.remove("sel");
+      go(route);
+      root.classList.remove("busy");
+      requestAnimationFrame(() => {
+        tellerWrap.classList.remove("reset"); teller.classList.remove("no-anim");
+        veil.classList.add("out"); veil.classList.remove("on");
+        setTimeout(() => { veil.classList.remove("out"); busy = false; }, 330);
+      });
+    }, 650);
+  }
+
+  teller.addEventListener("click", e => { const f = e.target.closest(".flap"); if (f) openFold(f.dataset.route); });
+  teller.addEventListener("keydown", e => {
+    const f = e.target.closest(".flap"); if (!f) return;
+    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openFold(f.dataset.route); }
+  });
+
+  /* header links: from the landing page, nav links play the same fold */
+  document.querySelector(".nav").addEventListener("click", e => {
+    const a = e.target.closest("a[data-route]"); if (!a) return;
+    e.preventDefault();
+    if (current === "home") openFold(a.dataset.route); else go(a.dataset.route);
+  });
+  $(".logo").addEventListener("click", e => { e.preventDefault(); go("home"); });
+  $("#back").addEventListener("click", () => go(current === "presentation" ? "project-nexusedge" : current && current.startsWith("project-") ? "projects" : "home"));
+
+  /* ---- project pages (Nexus Edge, Real Quest): section nav + scroll spy ---- */
+  document.querySelectorAll(".nx").forEach(pageEl => {
+    const btns = [...pageEl.querySelectorAll(".nx-nav button")];
+    btns.forEach(b => b.addEventListener("click", () => {
+      const t = document.getElementById(b.dataset.target);
+      if (t) t.scrollIntoView({ behavior: reduce.matches ? "auto" : "smooth", block: "start" });
+    }));
+    const setActive = id => btns.forEach(b => b.setAttribute("aria-current", String(b.dataset.target === id)));
+    setActive(btns[0].dataset.target);
+    if ("IntersectionObserver" in window){
+      const io = new IntersectionObserver(entries => {
+        entries.forEach(en => { if (en.isIntersecting) setActive(en.target.id); });
+      }, { rootMargin: "-35% 0px -60% 0px" });
+      pageEl.querySelectorAll(".nx-sec").forEach(sec => io.observe(sec));
+    }
+  });
+  document.querySelectorAll('a.press[data-route]').forEach(a => a.addEventListener("click", e => { e.preventDefault(); go(a.dataset.route); }));
+
+  show(routeOf(location.hash), { instant:true });
+})();
+</script>
+</body>
+</html>
