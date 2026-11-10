@@ -9,15 +9,14 @@ Add these files to this folder (same names, lowercase):
 | `origami/cinnamon-roll.jpg` … `origami/origami-6.jpg` | Chapter 03 photo stack (6 square photos, see below) |
 | `max.jpg` | Chapter 04, "Max, 10 years old." (shown 4:5, portrait) |
 
-Until a file is added, its frame shows a soft placeholder such as "max.jpg goes here".
+All photos are in place. If a file is ever missing, its frame shows a soft placeholder such as "max.jpg goes here".
 Photos are cropped to fit their frame, so any size works; around 1200px on the long side keeps the page fast.
 
 ## Chapter 03 origami stack
 
-Put six square-ish photos in `images/origami/`. The first is `cinnamon-roll.jpg`.
-Cards 2–6 currently expect `origami-2.jpg` … `origami-6.jpg` with placeholder alt text and captions.
-To change a card, open `index.html`, search for `TODO: replace file name`, and edit that card's
-`src` (and the `ph-note` file name below it), `alt`, and `data-caption`.
+Six square photos in `images/origami/`: `cinnamon-roll.jpg`, then `origami-2.jpg` … `origami-6.jpg`.
+To swap one, upload a new photo with the same name. To change a caption or alt text, open `index.html`,
+search for `data-file="origami-2.jpg"` (or the card you want), and edit its `data-caption` and `alt`.
 
 ## Contact page cranes
 
