@@ -1059,7 +1059,9 @@ main > .page.story{display:block}
 /* lavender origami frame for the headshot: the photo sits in the diamond window */
 .ori-frame{position:relative;width:min(100%,460px);aspect-ratio:1/1;filter:drop-shadow(0 16px 22px rgba(70,50,30,.16))}
 .of-svg{position:absolute;inset:0;width:100%;height:100%}
-.of-img{position:absolute;left:19%;top:19%;width:62%;height:62%;object-fit:cover;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%)}
+/* the diamond window clips the photo; HEADSHOT (top of the script) sets the focus point and zoom */
+.of-win{position:absolute;left:19%;top:19%;width:62%;height:62%;overflow:hidden;clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);background:var(--about-1)}
+.of-img{display:block;width:100%;height:100%;object-fit:cover;object-position:var(--hs-focus,50% 35%);transform:scale(var(--hs-zoom,1));transform-origin:var(--hs-focus,50% 35%)}
 /* chapter 04: the origami cat sits beside Max's photo */
 .vis-max{grid-template-columns:auto auto;align-items:end;justify-content:center;column-gap:var(--s3)}
 .vis-max .pic{width:clamp(220px,24vw,340px)}
@@ -1068,12 +1070,12 @@ main > .page.story{display:block}
 
 /* chapter 03: a clickable stack of origami photos (square cards; the next two peek out on the right) */
 .visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-.ostack{--cw:min(100%,360px);position:relative;display:block;width:calc(var(--cw) * 1.16);max-width:100%;aspect-ratio:1.16/1;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ostack{--cw:min(100%,360px);position:relative;display:block;margin-bottom:calc(var(--cw) * .1);width:calc(var(--cw) * 1.16);max-width:100%;aspect-ratio:1.16/1;padding:0;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .ostack:focus-visible{outline:2px dashed var(--ink-soft);outline-offset:8px;border-radius:16px}
 .ocard{position:absolute;left:0;top:0;width:86.2%;aspect-ratio:1/1;display:block;border-radius:14px;overflow:hidden;background:var(--paper-2);
   box-shadow:0 1px 0 #fff inset,0 18px 30px -22px rgba(70,50,30,.6),0 2px 6px rgba(70,50,30,.1);
   transform-origin:50% 90%;transition:transform .38s cubic-bezier(.2,.8,.2,1)}
-.ocard img{display:block;width:100%;height:100%;object-fit:cover}
+.ocard img{display:block;width:100%;height:100%;object-fit:cover;object-position:var(--focus,50% 50%)}   /* fills the square card edge to edge */
 .ocard[data-pos="0"]{z-index:6;transform:none}
 .ocard[data-pos="1"]{z-index:5;transform:translateX(8%) rotate(4deg)}
 .ocard[data-pos="2"]{z-index:4;transform:translateX(15%) rotate(8deg)}
@@ -1321,7 +1323,7 @@ body[data-page="about"] .story-track{display:block}
               <path d="M100 38 L162 100 L100 162 L38 100 Z" fill="#fffdf9"/>
             </g>
           </svg>
-          <img class="of-img" src="images/headshot.jpg" alt="Jenica Talaba" width="600" height="600" onerror="this.closest('.photo').classList.add('missing')">
+          <div class="of-win"><img class="of-img" id="headshotImg" src="images/headshot.jpg" alt="Jenica Talaba" width="600" height="600" onerror="this.closest('.photo').classList.add('missing')"></div>
           <span class="ph-note" aria-hidden="true">headshot.jpg goes here</span>
         </div>
         <svg class="acc acc-spark" style="right:4%;top:2%" width="26" height="26" aria-hidden="true"><use href="#star"/></svg>
@@ -1358,32 +1360,9 @@ body[data-page="about"] .story-track{display:block}
         <p>I've been folding since I was five, starting with paper cranes. Curiosity turned into years of self-taught experiments, from spinning ninja stars to 3D modular pieces, including a cinnamon roll made of over 1,000 folded units. I've also donated over 100 origami creations to hospice patients. Origami taught me that small, handmade gestures can bring real comfort, and that every finished piece starts as a flat sheet and a lot of patient folds, much like design.</p>
       </div>
       <figure class="ch-vis ostack-wrap">
-        <!-- origami photo stack: click / Enter / Space moves the top card to the back. Edit cards here (file, alt, data-caption). -->
+        <!-- origami photo stack: click / Enter / Space moves the top card to the back. Edit the photos in ORIGAMI (top of the script). -->
         <button type="button" class="ostack" id="ostack" aria-label="Next origami photo, 2 of 6" aria-describedby="ostackNow">
-            <span class="ocard photo" data-pos="0" data-file="cinnamon-roll.jpg" data-caption="Over 1,000 folds, one cinnamon roll.">
-              <img src="images/origami/cinnamon-roll.jpg" alt="3D origami cinnamon roll made of over 1,000 folded pieces" width="800" height="800" onerror="this.closest('.photo').classList.add('missing')">
-              <span class="ph-note" aria-hidden="true">cinnamon-roll.jpg goes here</span>
-            </span>
-            <span class="ocard photo" data-pos="1" data-file="origami-2.jpg" data-caption="3D origami swans made up of 100 pieces">
-              <img src="images/origami/origami-2.jpg" alt="Two 3D origami swans, one mint green and one light blue, each built from 100 folded paper pieces" width="800" height="800" loading="lazy" onerror="this.closest('.photo').classList.add('missing')">
-              <span class="ph-note" aria-hidden="true">origami-2.jpg goes here</span>
-            </span>
-            <span class="ocard photo" data-pos="2" data-file="origami-3.jpg" data-caption="Kusudama origami spheres!">
-              <img src="images/origami/origami-3.jpg" alt="A pink star-shaped kusudama and a green kusudama sphere with patterned paper accents" width="800" height="800" loading="lazy" onerror="this.closest('.photo').classList.add('missing')">
-              <span class="ph-note" aria-hidden="true">origami-3.jpg goes here</span>
-            </span>
-            <span class="ocard photo" data-pos="3" data-file="origami-4.jpg" data-caption="Making good luck charms for my friends">
-              <img src="images/origami/origami-4.jpg" alt="Origami good luck charms: kusudama balls and paper cranes strung together on a thread" width="800" height="800" loading="lazy" onerror="this.closest('.photo').classList.add('missing')">
-              <span class="ph-note" aria-hidden="true">origami-4.jpg goes here</span>
-            </span>
-            <span class="ocard photo" data-pos="4" data-file="origami-5.jpg" data-caption="More kusudamas!">
-              <img src="images/origami/origami-5.jpg" alt="Two more kusudama spheres folded from red and brown patterned paper" width="800" height="800" loading="lazy" onerror="this.closest('.photo').classList.add('missing')">
-              <span class="ph-note" aria-hidden="true">origami-5.jpg goes here</span>
-            </span>
-            <span class="ocard photo" data-pos="5" data-file="origami-6.jpg" data-caption="Making origami tulips for Health Hospice!">
-              <img src="images/origami/origami-6.jpg" alt="Colorful origami tulips on green paper stems, made for Health Hospice" width="800" height="800" loading="lazy" onerror="this.closest('.photo').classList.add('missing')">
-              <span class="ph-note" aria-hidden="true">origami-6.jpg goes here</span>
-            </span>
+            <!-- cards are built from the ORIGAMI list at the top of the script -->
         </button>
         <span class="visually-hidden" id="ostackNow">Showing: 3D origami cinnamon roll made of over 1,000 folded pieces</span>
         <figcaption class="ostack-meta">
@@ -2300,6 +2279,19 @@ body[data-page="about"] .story-track{display:block}
     { number: 6, wish: "[WISH]", name: "[NAME]" }
   ];
   const FORMSPREE_URL = "";   // paste my Formspree form address here (e.g. "https://formspree.io/f/abcdwxyz"); "" = don't send wishes anywhere
+  /* About, chapter 01: the headshot in the lavender diamond.
+     focus = which part of the photo stays centred ("left% top%"); zoom below 1 shows more of the photo, above 1 zooms in. */
+  const HEADSHOT = { file: "images/headshot.jpg", focus: "50% 35%", zoom: 1 };
+  /* About, chapter 03: the origami photo stack, in order. Each photo fills its square card;
+     focus picks which part stays visible ("left% top%", e.g. "30% 50%" keeps more of the left side). Default "50% 50%". */
+  const ORIGAMI = [
+    { file: "images/origami/cinnamon-roll.jpg", alt: "3D origami cinnamon roll made of over 1,000 folded pieces", caption: "Over 1,000 folds, one cinnamon roll.", focus: "50% 50%" },
+    { file: "images/origami/origami-2.jpg", alt: "Two 3D origami swans, one mint green and one light blue, each built from 100 folded paper pieces", caption: "3D origami swans made up of 100 pieces", focus: "50% 50%" },
+    { file: "images/origami/origami-3.jpg", alt: "A pink star-shaped kusudama and a green kusudama sphere with patterned paper accents", caption: "Kusudama origami spheres!", focus: "50% 50%" },
+    { file: "images/origami/origami-4.jpg", alt: "Origami good luck charms: kusudama balls and paper cranes strung together on a thread", caption: "Making good luck charms for my friends", focus: "50% 50%" },
+    { file: "images/origami/origami-5.jpg", alt: "Two more kusudama spheres folded from red and brown patterned paper", caption: "More kusudamas!", focus: "50% 50%" },
+    { file: "images/origami/origami-6.jpg", alt: "Colorful origami tulips on green paper stems, made for Health Hospice", caption: "Making origami tulips for Health Hospice!", focus: "50% 50%" }
+  ];
   const RESUME = {
     image: "",                    // picture of my résumé; "" uses the copy built into this page (e.g. "images/resume.png")
     pdf: "https://drive.google.com/file/d/1ga3xdC1mAgF09qRhT5brzFxDy7iBuKIG/view?usp=sharing"   // file people download
@@ -2768,6 +2760,30 @@ body[data-page="about"] .story-track{display:block}
     const chIO = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add("in"); chIO.unobserve(e.target); } }), { threshold: .12 });
     chs.forEach(c => chIO.observe(c));
   }
+
+  /* ---- chapter 01 headshot: file, focus point and zoom from HEADSHOT ---- */
+  const hsImg = $("#headshotImg");
+  if (hsImg){
+    const fr = hsImg.closest(".ori-frame");
+    if (HEADSHOT.focus) fr.style.setProperty("--hs-focus", HEADSHOT.focus);
+    fr.style.setProperty("--hs-zoom", +HEADSHOT.zoom > 0 ? +HEADSHOT.zoom : 1);
+    if (HEADSHOT.file && hsImg.getAttribute("src") !== HEADSHOT.file){
+      fr.dataset.file = HEADSHOT.file.split("/").pop();
+      fr.querySelector(".ph-note").textContent = fr.dataset.file + " goes here";
+      hsImg.src = HEADSHOT.file;
+    }
+  }
+
+  /* ---- chapter 03 origami stack: cards built from ORIGAMI ---- */
+  const esc = v => String(v ?? "").replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;");
+  const ostackEl = $("#ostack");
+  if (ostackEl) ostackEl.insertAdjacentHTML("beforeend", ORIGAMI.map((o, i) => {
+    const name = String(o.file).split("/").pop();
+    return `<span class="ocard photo" data-pos="${i}" data-file="${esc(name)}" data-caption="${esc(o.caption)}" style="--focus:${esc(o.focus || "50% 50%")}">
+              <img src="${esc(o.file)}" alt="${esc(o.alt)}" width="800" height="800"${i ? ' loading="lazy"' : ""} onerror="this.closest('.photo').classList.add('missing')">
+              <span class="ph-note" aria-hidden="true">${esc(name)} goes here</span>
+            </span>`;
+  }).join(""));
 
   /* ---- chapter 03 origami stack: the top card slides out and tucks in behind ---- */
   const ostack = $("#ostack");
