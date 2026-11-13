@@ -1361,13 +1361,13 @@ body[data-page="about"] .story-track{display:block}
       </div>
       <figure class="ch-vis ostack-wrap">
         <!-- origami photo stack: click / Enter / Space moves the top card to the back. Edit the photos in ORIGAMI (top of the script). -->
-        <button type="button" class="ostack" id="ostack" aria-label="Next origami photo, 2 of 6" aria-describedby="ostackNow">
+        <button type="button" class="ostack" id="ostack" aria-label="Next origami photo, 2 of 8" aria-describedby="ostackNow">
             <!-- cards are built from the ORIGAMI list at the top of the script -->
         </button>
         <span class="visually-hidden" id="ostackNow">Showing: 3D origami cinnamon roll made of over 1,000 folded pieces</span>
         <figcaption class="ostack-meta">
           <span class="cap" id="ostackCap" aria-live="polite">Over 1,000 folds, one cinnamon roll.</span>
-          <span class="ostack-count" id="ostackCount">1 / 6</span>
+          <span class="ostack-count" id="ostackCount">1 / 8</span>
           <span class="ostack-hint" id="ostackHint">tap to flip</span>
         </figcaption>
         <svg class="acc acc-spark" style="left:6%;top:4%" width="22" height="22" aria-hidden="true"><use href="#star"/></svg>
@@ -2290,7 +2290,9 @@ body[data-page="about"] .story-track{display:block}
     { file: "images/origami/origami-3.jpg", alt: "A pink star-shaped kusudama and a green kusudama sphere with patterned paper accents", caption: "Kusudama origami spheres!", focus: "50% 50%" },
     { file: "images/origami/origami-4.jpg", alt: "Origami good luck charms: kusudama balls and paper cranes strung together on a thread", caption: "Making good luck charms for my friends", focus: "50% 50%" },
     { file: "images/origami/origami-5.jpg", alt: "Two more kusudama spheres folded from red and brown patterned paper", caption: "More kusudamas!", focus: "50% 50%" },
-    { file: "images/origami/origami-6.jpg", alt: "Colorful origami tulips on green paper stems, made for Health Hospice", caption: "Making origami tulips for Health Hospice!", focus: "50% 50%" }
+    { file: "images/origami/origami-6.jpg", alt: "Colorful origami tulips on green paper stems, made for Health Hospice", caption: "Making origami tulips for Health Hospice!", focus: "50% 50%" },
+    { file: "images/origami/origami-7.jpg", alt: "A 3D origami cactus made of around 600 individual folded pieces, made as a gift for a friend", caption: "A 3D origami cactus made up of around 600 individual pieces for my friend!", focus: "50% 50%" },
+    { file: "images/origami/origami-8.jpg", alt: "The first kusudamas Jenica ever made, folded for her 5th grade business fair", caption: "Here are the first ever kusudamas I made for my 5th grade business fair that sold out!", focus: "50% 50%" }
   ];
   const RESUME = {
     image: "",                    // picture of my résumé; "" uses the copy built into this page (e.g. "images/resume.png")
@@ -2780,7 +2782,7 @@ body[data-page="about"] .story-track{display:block}
   if (ostackEl) ostackEl.insertAdjacentHTML("beforeend", ORIGAMI.map((o, i) => {
     const name = String(o.file).split("/").pop();
     return `<span class="ocard photo" data-pos="${i}" data-file="${esc(name)}" data-caption="${esc(o.caption)}" style="--focus:${esc(o.focus || "50% 50%")}">
-              <img src="${esc(o.file)}" alt="${esc(o.alt)}" width="800" height="800"${i ? ' loading="lazy"' : ""} onerror="this.closest('.photo').classList.add('missing')">
+              <img src="${esc(o.file)}" alt="${esc(o.alt)}" width="800" height="800"${i ? ' loading="lazy"' : ""} data-alt-src="images/${esc(name)}" onerror="if(this.dataset.altSrc&&!this.dataset.tried){this.dataset.tried=1;this.src=this.dataset.altSrc}else this.closest('.photo').classList.add('missing')">
               <span class="ph-note" aria-hidden="true">${esc(name)} goes here</span>
             </span>`;
   }).join(""));
