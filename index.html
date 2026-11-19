@@ -57,7 +57,6 @@ body{
   margin:0;padding-inline:var(--gutter);min-height:calc(100 * var(--vh));display:flex;flex-direction:column;
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .38 0 0 0 0 .3 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
-html.busy,html.busy body{overflow:hidden}
 a{color:inherit}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px dashed var(--ink-soft);outline-offset:3px;border-radius:6px}
@@ -116,83 +115,23 @@ body[data-page="home"] main{padding-block:var(--s2) var(--s4)}
 /* ---------- landing ---------- */
 .landing{position:relative;display:grid;align-content:center;gap:var(--s5)}
 .chrome{transition:opacity .22s ease}
-html.busy .chrome{opacity:0}
 /* stage: the fortune teller, its hover previews, sparkles and the cat; padding leaves room for the previews */
 .stage-row{position:relative;z-index:1;display:grid;justify-items:center;padding-block:46px}
-.teller-wrap{position:relative;width:var(--tw);aspect-ratio:1/1;max-width:100%;z-index:3;
-  transform-origin:50% 50%;will-change:transform}
-.teller-wrap.zooming{transition:transform .5s cubic-bezier(.45,0,.7,.35);transform:scale(7)}
-.teller-wrap.reset{transition:none!important}
-.teller{width:100%;height:100%;overflow:visible;display:block}
-.flap{cursor:pointer;outline:none;transition:transform .3s cubic-bezier(.2,.8,.2,1);
-  transform-box:fill-box;transform-origin:calc(100% - var(--ox)) calc(100% - var(--oy));-webkit-tap-highlight-color:transparent}
-.flap .f1{fill:var(--c1);transition:fill .25s}
-.flap .f2{fill:var(--c2);transition:fill .25s}
-.flap .shadow{fill:#5a4a3a;opacity:.13;transition:opacity .3s}
-.flap .crease{stroke:#fff;stroke-opacity:.6;stroke-width:1.2;fill:none}
-.flap .crease-d{stroke:#6b5a48;stroke-opacity:.14;stroke-width:1;fill:none}
-.flap .pinch{fill:url(#pinch);pointer-events:none}
-.flap .edge{fill:none;stroke:#6f6358;stroke-opacity:.5;stroke-width:1.3;stroke-linejoin:round}
-.flap .ring{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:5 5;opacity:0}
-.flap:focus-visible .ring{opacity:.7}
-.flap text{font-family:var(--f-hand);font-size:25px;letter-spacing:.12em;fill:var(--ink);pointer-events:none;text-anchor:middle;dominant-baseline:middle}
-/* lift: the flap steps out and grows slightly, with a deeper shadow */
-@media (hover:hover){
-  .teller:not(.opening) .flap:hover{transform:translate(calc(var(--dx)*6px),calc(var(--dy)*6px)) scale(1.045)}
-  .teller:not(.opening) .flap:hover .f1{fill:var(--c1h)}
-  .teller:not(.opening) .flap:hover .f2{fill:var(--c2h)}
-  .teller:not(.opening) .flap:hover .shadow{opacity:.36}
-}
-.teller:not(.opening) .flap:focus-visible{transform:translate(calc(var(--dx)*6px),calc(var(--dy)*6px)) scale(1.045)}
-.teller:not(.opening) .flap:focus-visible .f1{fill:var(--c1h)}
-.teller:not(.opening) .flap:focus-visible .f2{fill:var(--c2h)}
-.teller:not(.opening) .flap:focus-visible .shadow{opacity:.36}
-/* gentle tilt toward the mouse (5° at most); --tx/--ty come from the script */
-.teller{transform:perspective(1200px) rotateX(calc(var(--ty,0) * -5deg)) rotateY(calc(var(--tx,0) * 5deg));transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-/* opening: the flaps are moved by the script (pump, then open wide); the clicked one keeps its hover colour */
-.teller.opening .flap.sel .f1{fill:var(--c1h)}
-.teller.opening .flap.sel .f2{fill:var(--c2h)}
-.teller.opening .flap .shadow{opacity:.3}
-html.busy .teller{pointer-events:none}
-.teller.no-anim .flap{transition:none}
-.teller{position:relative;z-index:1}
-
-/* ---------- inside of the fortune teller ---------- */
-.cavity{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:0;
-  transform:perspective(1200px) rotateX(calc(var(--ty,0) * -5deg)) rotateY(calc(var(--tx,0) * 5deg))}
-.teller-wrap.pumping .cavity{opacity:1}
-/* the opened paper around the pocket, with its fold lines */
-.sheet{position:absolute;inset:9%;opacity:0;border-radius:3px;
-  background:linear-gradient(45deg,transparent calc(50% - .6px),rgba(122,102,84,.22) 50%,transparent calc(50% + .6px)),
-             linear-gradient(-45deg,transparent calc(50% - .6px),rgba(122,102,84,.22) 50%,transparent calc(50% + .6px)),
-             linear-gradient(90deg,transparent calc(50% - .6px),rgba(255,255,255,.7) 50%,transparent calc(50% + .6px)),
-             linear-gradient(0deg,transparent calc(50% - .6px),rgba(255,255,255,.7) 50%,transparent calc(50% + .6px)),
-             radial-gradient(circle,#ece2d4,#f8f2e9 70%);
-  box-shadow:inset 0 0 22px rgba(90,70,54,.18),0 10px 30px -18px rgba(70,50,30,.5)}
-.diamond{position:absolute;left:10%;top:10%;width:80%;height:80%;container-type:inline-size;transform:scale(.4)}
-/* each pocket is its own flat 3D stage, so the hinged flap never depth-sorts against its neighbours */
-.pocket{position:absolute;inset:0;perspective:900px}
-.pocket .base,.pocket .leaf{position:absolute;inset:0}
-/* the paper under each inner flap (where the fortune is written) */
-.pocket .base{background:linear-gradient(var(--g),#fbf6ee 30%,#e9dfd1)}
-/* inner flaps: a shade darker than the matching outer flap, darker toward the hollow centre, with a fold line */
-.pocket .leaf{transform-origin:var(--o);backface-visibility:visible;
-  background:linear-gradient(var(--fd),transparent calc(50% - .7px),rgba(255,255,255,.55) 50%,transparent calc(50% + .7px)),
-             linear-gradient(var(--g),var(--lc) 25%,var(--ld))}
-.q-about{--o:25% 25%;--g:to top left;--fd:45deg;--lc:color-mix(in srgb,var(--about-2) 88%,var(--ink));--ld:color-mix(in srgb,var(--about-2) 62%,var(--ink))}
-.q-projects{--o:75% 25%;--g:to top right;--fd:-45deg;--lc:color-mix(in srgb,var(--proj-2) 88%,var(--ink));--ld:color-mix(in srgb,var(--proj-2) 62%,var(--ink))}
-.q-resume{--o:25% 75%;--g:to bottom left;--fd:-45deg;--lc:color-mix(in srgb,var(--exp-2) 88%,var(--ink));--ld:color-mix(in srgb,var(--exp-2) 62%,var(--ink))}
-.q-contact{--o:75% 75%;--g:to bottom right;--fd:45deg;--lc:color-mix(in srgb,var(--con-2) 88%,var(--ink));--ld:color-mix(in srgb,var(--con-2) 62%,var(--ink))}
-.q-about .base,.q-about .leaf{clip-path:polygon(50% 50%,50% 0,0 50%)}
-.q-projects .base,.q-projects .leaf{clip-path:polygon(50% 50%,50% 0,100% 50%)}
-.q-resume .base,.q-resume .leaf{clip-path:polygon(50% 50%,0 50%,50% 100%)}
-.q-contact .base,.q-contact .leaf{clip-path:polygon(50% 50%,100% 50%,50% 100%)}
-/* the fortune: handwritten along the inner flap's fold line, hidden until that flap lifts */
-.fortune{position:absolute;margin:0;width:56%;text-align:center;font-family:var(--f-hand);font-size:clamp(13px,4.3cqw,26px);line-height:1.15;color:var(--ink);opacity:0}
-.q-about .fortune{left:34%;top:34%;transform:translate(-50%,-50%) rotate(-45deg)}
-.q-projects .fortune{left:66%;top:34%;transform:translate(-50%,-50%) rotate(45deg)}
-.q-resume .fortune{left:34%;top:66%;transform:translate(-50%,-50%) rotate(45deg)}
-.q-contact .fortune{left:66%;top:66%;transform:translate(-50%,-50%) rotate(-45deg)}
+.teller-wrap{position:relative;width:var(--tw);aspect-ratio:1/1;max-width:100%;z-index:3}
+/* the fortune teller: SVG layers sharing one viewBox; each pocket's layer sits inside a real <button> */
+.ft{position:absolute;inset:0}
+.ft svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;pointer-events:none}
+.ft .flapbtn{position:absolute;inset:0;padding:0;margin:0;border:0;background:none;pointer-events:none;cursor:pointer;
+  outline:none;-webkit-tap-highlight-color:transparent;font:inherit;color:inherit}
+.ft .hit{pointer-events:visiblePainted}
+.ft .ring{fill:none;stroke:var(--ink);stroke-width:2;stroke-dasharray:6 5;opacity:0}
+.ft .flapbtn:focus-visible .ring{opacity:.8}
+.ft .face{stroke:none}
+.ft .outline{fill:none;stroke-opacity:.7;stroke-width:1.3;stroke-linejoin:round}
+.ft .label{font-family:var(--f-hand);font-size:23px;letter-spacing:.12em;fill:var(--ink);text-anchor:middle;dominant-baseline:central;pointer-events:none}
+.ft .icon{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
+.ft .num{font-family:var(--f-hand);font-size:22px;text-anchor:middle;pointer-events:none}
+.ft .fortune{font-family:var(--f-hand);fill:var(--ink);text-anchor:middle}
 
 .spark{position:absolute;color:var(--ink);opacity:.75;pointer-events:none}
 .spark svg{display:block}
@@ -248,25 +187,25 @@ html.busy .teller{pointer-events:none}
 }
 
 /* previews beside each flap's outer corner on hover / keyboard focus */
-.pv{position:absolute;margin:0;max-width:62%;padding:5px 12px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 18px -12px rgba(70,50,30,.45);
+.pv{position:absolute;margin:0;max-width:34%;width:max-content;padding:5px 12px;background:var(--paper-2);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 18px -12px rgba(70,50,30,.45);
   font-family:var(--f-hand);font-size:clamp(16px,.5vw + 11px,21px);line-height:1.15;color:var(--ink);pointer-events:none;z-index:5;
   opacity:0;transform:translateY(var(--pv-y,4px));transition:opacity .2s ease,transform .25s ease}
-/* each preview sits on the outer corner of its own flap */
-.pv-about{left:1%;top:1%}
-.pv-projects{right:1%;top:1%;text-align:right}
-.pv-resume{left:1%;bottom:1%;--pv-y:-4px}
-.pv-contact{right:1%;bottom:1%;text-align:right;--pv-y:-4px}
+/* each preview sits just beyond the pointed outer tip of its own pocket (closed, the tips are ~19% in from the corners) */
+.pv-about{right:78%;bottom:79%;text-align:right}
+.pv-projects{left:78%;bottom:79%}
+.pv-resume{right:78%;top:79%;text-align:right;--pv-y:-4px}
+.pv-contact{left:78%;top:79%;--pv-y:-4px}
 @media (hover:hover){
-  .teller-wrap:has(.flap[data-route="about"]:hover) .pv-about,
-  .teller-wrap:has(.flap[data-route="projects"]:hover) .pv-projects,
-  .teller-wrap:has(.flap[data-route="resume"]:hover) .pv-resume,
-  .teller-wrap:has(.flap[data-route="contact"]:hover) .pv-contact{opacity:1;transform:none}
+  .teller-wrap:has(.flapbtn[data-key="about"]:hover) .pv-about,
+  .teller-wrap:has(.flapbtn[data-key="projects"]:hover) .pv-projects,
+  .teller-wrap:has(.flapbtn[data-key="resume"]:hover) .pv-resume,
+  .teller-wrap:has(.flapbtn[data-key="contact"]:hover) .pv-contact{opacity:1;transform:none}
 }
-.teller-wrap:has(.flap[data-route="about"]:focus-visible) .pv-about,
-.teller-wrap:has(.flap[data-route="projects"]:focus-visible) .pv-projects,
-.teller-wrap:has(.flap[data-route="resume"]:focus-visible) .pv-resume,
-.teller-wrap:has(.flap[data-route="contact"]:focus-visible) .pv-contact{opacity:1;transform:none}
-html.busy .pv,.teller-wrap:has(.teller.opening) .pv{opacity:0!important}
+.teller-wrap:has(.flapbtn[data-key="about"]:focus-visible) .pv-about,
+.teller-wrap:has(.flapbtn[data-key="projects"]:focus-visible) .pv-projects,
+.teller-wrap:has(.flapbtn[data-key="resume"]:focus-visible) .pv-resume,
+.teller-wrap:has(.flapbtn[data-key="contact"]:focus-visible) .pv-contact{opacity:1;transform:none}
+.teller-wrap:has(.ft.playing) .pv{opacity:0!important}
 
 /* decorative origami pieces at the edges; they drift a little with the mouse (--mx/--my from the script) */
 .ori-layer{position:absolute;inset:0;pointer-events:none;z-index:0}
@@ -291,16 +230,13 @@ html.busy .pv,.teller-wrap:has(.teller.opening) .pv{opacity:0!important}
 .fold-note > span:first-child{transform:rotate(-4deg)}
 .fn-arrow{display:block;width:clamp(64px,5vw,86px);height:28px;flex:none}
 .fn-arrow svg{display:block;width:100%;height:100%;overflow:visible;transform-origin:0 50%;transform:rotate(var(--aim,0deg));transition:transform .3s ease}
-/* flap icons share the site's line-icon style */
-.flap-ic{fill:none;stroke:var(--ink);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
-.flap-mark{pointer-events:none}
-.flap-mark text{paint-order:stroke;stroke:rgba(252,249,244,.6);stroke-width:3.5px;stroke-linejoin:round}
 
 /* desktop split: name block on the left (~40%), fortune teller on the right, sized so nothing scrolls
    (64px header + 24px page padding + 92px room for previews + a little air = 196px) */
 @media (min-width:1024px){
   :root{--tw:min(740px, calc((min(100vw, 1440px) - 2 * var(--gutter) - 56px) * .6 - 40px), calc(100 * var(--vh) - 196px))}
   .landing{grid-template-columns:minmax(0,4fr) minmax(0,6fr);column-gap:56px;align-items:center}
+  .teller-wrap,.spark{translate:-24px 0}     /* teller (and its sparkles) a little left of centre, so the opened teller clears the cat */
   .hero{text-align:left;justify-items:start}
   .hero-cta{justify-content:flex-start}
 }
@@ -311,20 +247,15 @@ html.busy .pv,.teller-wrap:has(.teller.opening) .pv{opacity:0!important}
   .spark.s1{left:auto;right:12%;top:6px}
   .spark.s2{right:0;top:42%}
 }
-/* reduced motion: no tilt, lift or drift */
+@media (max-width:640px){ .teller-wrap{width:min(var(--tw), calc(100% - 64px))} }   /* room beside it, so the opened teller clears the cat */
+/* reduced motion: no drift */
 @media (prefers-reduced-motion:reduce){
   .btn:hover{transform:none}
-  .teller{transform:none!important;transition:none}
   .ori{transform:rotate(var(--r))!important;transition:none}
-  .teller:not(.opening) .flap:hover,.teller:not(.opening) .flap:focus-visible{transform:none!important}
   .pv{transform:none!important}
   .fn-arrow svg{transition:none}
 }
 
-/* zoom overlay */
-.veil{position:fixed;inset:0;background:var(--sel-soft);opacity:0;pointer-events:none;z-index:50;transition:opacity .16s ease}
-.veil.on{opacity:1}
-.veil.out{transition:opacity .32s ease}
 
 /* ---------- shared section bits ---------- */
 h1.title{font-family:var(--f-hand);font-weight:400;font-size:var(--fs-h1);line-height:1.1;margin:0 0 var(--s1);display:flex;align-items:center;gap:10px;text-wrap:balance}
@@ -1176,19 +1107,6 @@ body[data-page="about"] .story-track{display:block}
 <!-- reusable SVG defs -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
-    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="6"/></filter>
-    <filter id="wobble" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".018" numOctaves="1" seed="4"/><feDisplacementMap in="SourceGraphic" scale="1.8"/></filter>
-    <radialGradient id="pinch" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="175">
-      <stop offset="0" stop-color="#5a4636" stop-opacity=".2"/>
-      <stop offset=".4" stop-color="#5a4636" stop-opacity=".05"/>
-      <stop offset=".8" stop-color="#fff" stop-opacity="0"/>
-      <stop offset="1" stop-color="#fff" stop-opacity=".22"/>
-    </radialGradient>
-    <radialGradient id="pocket-unused" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="#6b5a48" stop-opacity=".28"/>
-      <stop offset=".55" stop-color="#6b5a48" stop-opacity=".06"/>
-      <stop offset="1" stop-color="#6b5a48" stop-opacity="0"/>
-    </radialGradient>
     <symbol id="star" viewBox="-12 -12 24 24"><path d="M0 -10 C1 -2 2 -1 10 0 C2 1 1 2 0 10 C-1 2 -2 1 -10 0 C-2 -1 -1 -2 0 -10Z" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></symbol>
     <symbol id="cat" viewBox="0 0 124 140">
       <path d="M94 124 C112 116 118 98 108 88 L102 92 C110 100 104 114 90 118Z" fill="#e6dacb" stroke="#bfae9b" stroke-width=".8"/>
@@ -1272,63 +1190,16 @@ body[data-page="about"] .story-track{display:block}
     <span class="spark chrome s4" aria-hidden="true"><svg width="12" height="12"><use href="#star"/></svg></span>
 
     <div class="teller-wrap" id="tellerWrap">
-      <!-- inside of the fortune teller: four inner flaps around a diamond cavity; seen only while it opens -->
-      <div class="cavity" id="cavity" aria-hidden="true">
-        <div class="sheet"></div>
-        <div class="diamond">
-          <div class="pocket q-about"><div class="base"></div><p class="fortune">You'll meet a designer who loves origami.</p><div class="leaf"></div></div>
-          <div class="pocket q-projects"><div class="base"></div><p class="fortune">Two case studies are waiting for you.</p><div class="leaf"></div></div>
-          <div class="pocket q-resume"><div class="base"></div><p class="fortune">A one-page summary is in your future.</p><div class="leaf"></div></div>
-          <div class="pocket q-contact"><div class="base"></div><p class="fortune">Good news: she'd love to hear from you.</p><div class="leaf"></div></div>
-        </div>
+      <!-- the fortune teller: one flat drawing seen from above, built by the script; each pocket is a real button -->
+      <div class="ft" id="ftBox" role="group" aria-label="Fortune teller navigation. Choose a fold.">
+        <svg id="ftBase" viewBox="-270 -270 540 540" aria-hidden="true" focusable="false"></svg>
+        <button class="flapbtn" type="button" data-key="about"    aria-label="About"    aria-describedby="pv-about"></button>
+        <button class="flapbtn" type="button" data-key="projects" aria-label="Projects" aria-describedby="pv-projects"></button>
+        <button class="flapbtn" type="button" data-key="resume"   aria-label="Résumé"   aria-describedby="pv-resume"></button>
+        <button class="flapbtn" type="button" data-key="contact"  aria-label="Contact"  aria-describedby="pv-contact"></button>
+        <svg id="ftTop" viewBox="-270 -270 540 540" aria-hidden="true" focusable="false"></svg>
       </div>
-      <svg class="teller" id="teller" viewBox="-200 -200 400 400" role="group" aria-label="Fortune teller navigation. Choose a fold.">
-
-        <g class="flap" data-route="about" tabindex="0" role="button" aria-describedby="pv-about" aria-label="About"
-           style="--dx:-.707;--dy:-.707;--ox:100%;--oy:100%;--c1:var(--about-1);--c2:var(--about-2);--c1h:#d0c6ef;--c2h:#bbace4;--c3:var(--about-3)">
-          <g transform="scale(1 1)">
-            <path class="shadow" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#soft)" transform="translate(0 6)"/>
-            <path class="f2" d="M0 0 L0 -138 Q-60 -178 -160 -160 Z"/><path class="f1" d="M0 0 L-138 0 Q-178 -60 -160 -160 Z"/>
-            <path class="pinch" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
-            <path class="crease" d="M0 0 L-160 -160"/><path class="crease-d" d="M-1 1 L-160 -159"/>
-            <path class="edge" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#wobble)"/><path class="ring" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
-          </g>
-          <g class="flap-ic" transform="translate(-108 -108) scale(1.15)" aria-hidden="true"><circle cx="0" cy="-4" r="4.2"/><path d="M-8 9 c0 -5.5 3.6 -8.5 8 -8.5 s8 3 8 8.5"/></g><g class="flap-mark" transform="translate(-74 -74) rotate(-45)" aria-hidden="true"><text style="font-size:22px">ABOUT</text></g>
-        </g>
-        <g class="flap" data-route="projects" tabindex="0" role="button" aria-describedby="pv-projects" aria-label="Projects"
-           style="--dx:.707;--dy:-.707;--ox:0%;--oy:100%;--c1:var(--proj-1);--c2:var(--proj-2);--c1h:#f6c6a6;--c2h:#eaa982;--c3:var(--proj-3)">
-          <g transform="scale(-1 1)">
-            <path class="shadow" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#soft)" transform="translate(0 6)"/>
-            <path class="f1" d="M0 0 L0 -138 Q-60 -178 -160 -160 Z"/><path class="f2" d="M0 0 L-138 0 Q-178 -60 -160 -160 Z"/>
-            <path class="pinch" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
-            <path class="crease" d="M0 0 L-160 -160"/><path class="crease-d" d="M-1 1 L-160 -159"/>
-            <path class="edge" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#wobble)"/><path class="ring" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
-          </g>
-          <g class="flap-ic" transform="translate(108 -108) scale(1.15)" aria-hidden="true"><path d="M-10 -6 h6.5 l2 2.4 h11.5 v11.6 h-20Z"/><path d="M-10 -1.6 h20"/></g><g class="flap-mark" transform="translate(74 -74) rotate(45)" aria-hidden="true"><text style="font-size:21px">PROJECTS</text></g>
-        </g>
-        <g class="flap" data-route="resume" tabindex="0" role="button" aria-describedby="pv-resume" aria-label="Résumé"
-           style="--dx:-.707;--dy:.707;--ox:100%;--oy:0%;--c1:var(--exp-1);--c2:var(--exp-2);--c1h:#b4cdef;--c2h:#94b4e2;--c3:var(--exp-3)">
-          <g transform="scale(1 -1)">
-            <path class="shadow" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#soft)" transform="translate(0 -6)"/>
-            <path class="f1" d="M0 0 L0 -138 Q-60 -178 -160 -160 Z"/><path class="f2" d="M0 0 L-138 0 Q-178 -60 -160 -160 Z"/>
-            <path class="pinch" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
-            <path class="crease" d="M0 0 L-160 -160"/><path class="crease-d" d="M-1 1 L-160 -159"/>
-            <path class="edge" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#wobble)"/><path class="ring" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
-          </g>
-          <g class="flap-ic" transform="translate(-108 108) scale(1.15)" aria-hidden="true"><path d="M-7 -10 H2.5 L7.5 -5 V10 H-7 Z"/><path d="M2.5 -10 V-5 H7.5"/><path d="M-3.5 0 H4 M-3.5 4 H4 M-3.5 -4 H0"/></g><g class="flap-mark" transform="translate(-74 74) rotate(45)" aria-hidden="true"><text style="font-size:22px">RÉSUMÉ</text></g>
-        </g>
-        <g class="flap" data-route="contact" tabindex="0" role="button" aria-describedby="pv-contact" aria-label="Contact"
-           style="--dx:.707;--dy:.707;--ox:0%;--oy:0%;--c1:var(--con-1);--c2:var(--con-2);--c1h:#cda4dc;--c2h:#c99fd8;--c3:var(--con-3)">
-          <g transform="scale(-1 -1)">
-            <path class="shadow" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#soft)" transform="translate(0 -6)"/>
-            <path class="f2" d="M0 0 L0 -138 Q-60 -178 -160 -160 Z"/><path class="f1" d="M0 0 L-138 0 Q-178 -60 -160 -160 Z"/>
-            <path class="pinch" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
-            <path class="crease" d="M0 0 L-160 -160"/><path class="crease-d" d="M-1 1 L-160 -159"/>
-            <path class="edge" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z" filter="url(#wobble)"/><path class="ring" d="M0 0 L0 -138 Q-60 -178 -160 -160 Q-178 -60 -138 -3 Z"/>
-          </g>
-          <g class="flap-ic" transform="translate(108 108) scale(1.15)" aria-hidden="true"><rect x="-10" y="-6.5" width="20" height="14" rx="1.8"/><path d="M-10 -5.5 l10 7 l10 -7"/></g><g class="flap-mark" transform="translate(74 74) rotate(-45)" aria-hidden="true"><text style="font-size:21px">CONTACT</text></g>
-        </g>
-      </svg>
+      <p class="sr-only" id="ftSaid" aria-live="polite"></p>
 
       <!-- hover / focus previews -->
       <p class="pv pv-about" id="pv-about" aria-hidden="true">Who I am &amp; what I love</p>
@@ -1353,7 +1224,7 @@ body[data-page="about"] .story-track{display:block}
         <h2 class="ch-title" id="ch1-t">Nice to meet you!</h2>
       </header>
       <div class="ch-body">
-        <p>I was born and raised in Orange County, California, and earned my Associate's degree in Psychology at Irvine Valley College. Now I'm at UC San Diego, pursuing a B.S. in Cognitive Science with a specialization in Design &amp; Interaction. I love learning, asking questions, and finding inspiration in the little things around me.</p>
+        <p>Hi! I'm Jenica. I was born and raised in Orange County, California, and earned my Associate's degree in Psychology at Irvine Valley College. Now I'm at UC San Diego, pursuing a B.S. in Cognitive Science with a specialization in Design &amp; Interaction. I love learning, asking questions, and finding inspiration in the little things around me.</p>
       </div>
       <figure class="ch-vis">
         <div class="ori-frame photo" data-file="headshot.jpg">
@@ -2302,7 +2173,6 @@ body[data-page="about"] .story-track{display:block}
 </div>
 
 <footer class="foot"><span>Same you, just unfolded. ♡</span></footer>
-<div class="veil" id="veil" aria-hidden="true"></div>
 
 <script>
 (() => {
@@ -2368,8 +2238,7 @@ body[data-page="about"] .story-track{display:block}
   const $ = s => document.querySelector(s);
   const reduce = matchMedia("(prefers-reduced-motion: reduce)");
   const root = document.documentElement;
-  const tellerWrap = $("#tellerWrap"), teller = $("#teller"), veil = $("#veil");
-  const SOFT = { about:"--about-3", projects:"--proj-3", resume:"--exp-3", contact:"--con-3" };
+  const tellerWrap = $("#tellerWrap");
   let current = null, busy = false, caseId = "realquest", step = 0;
 
   /* ---- render static lists ---- */
@@ -2623,6 +2492,7 @@ body[data-page="about"] .story-track{display:block}
       if (a.dataset.route === navKey) a.setAttribute("aria-current","page"); else a.removeAttribute("aria-current");
     });
     current = route;
+    if (typeof ft !== "undefined") ft.reset();                 // the fortune teller is closed (pose A) whenever you come back
     if (pageKey === "home") { requestAnimationFrame(() => aimArrow()); setTimeout(() => aimArrow(), 600); }
     if (pageKey === "about") requestAnimationFrame(() => placeBoat());
     if (pageKey === "resume") initResume();
@@ -2635,104 +2505,480 @@ body[data-page="about"] .story-track{display:block}
   addEventListener("popstate", () => show(routeOf(location.hash)));
   addEventListener("hashchange", () => { const r = routeOf(location.hash); if (r !== current) show(r); });
 
-  /* fortune teller folds closed again when you come back */
 
-  /* ---- the signature interaction: pump like a paper fortune teller, lift an inner flap, read the fortune, arrive ----
-     timeline (ms, 1800 total): 0 closed · 185 open left|right · 370 closed · 555 open top|bottom · 740 closed
-                    · 955 open wide · 955–1260 inner flap hinges up · 1150–1800 fortune · 1650 colour wash · 1800 go */
-  const SEQ_MS = 1800;
-  const cavity = $("#cavity"), diamond = cavity.querySelector(".diamond");
-  let seq = null;
-  function openFold(route){
-    if (busy){ if (seq) finishFold(); return; }        // second click / key press skips ahead
-    if (reduce.matches){ go(route); return; }
-    busy = true;
-    const flap = teller.querySelector(`.flap[data-route="${route}"]`);
-    const k = SOFT[route].slice(0,-2);   // e.g. "--proj"
-    root.style.setProperty("--sel-soft", `var(${k}-3)`);
-    root.style.setProperty("--sel-1", `var(${k}-1)`);
-    root.style.setProperty("--sel-2", `var(${k}-2)`);
-    root.classList.add("busy");
-    teller.querySelectorAll(".flap").forEach(f => f.classList.toggle("sel", f === flap));
-    teller.classList.add("opening");
-    tellerWrap.classList.add("pumping");
-    const offs = [0, .103, .205, .308, .411, .53, 1];
-    const anims = [];
-    const ease = "cubic-bezier(.45,0,.35,1)";
-    teller.querySelectorAll(".flap").forEach(f => {
-      const sx = Math.sign(parseFloat(f.style.getPropertyValue("--dx"))), sy = Math.sign(parseFloat(f.style.getPropertyValue("--dy")));
-      const T = (x, y, sc = 1) => `translate(${x}px, ${y}px) scale(${sc})`;
-      const shut = T(0, 0);
-      const frames = [shut, T(sx * 26, 0), shut, T(0, sy * 26), shut, T(sx * 44, sy * 44, .76), T(sx * 44, sy * 44, .76)];
-      anims.push(f.animate(frames.map((t, i) => ({ transform: t, offset: offs[i], easing: ease })), { duration: SEQ_MS, fill: "forwards" }));
+  /* ================= THE FORTUNE TELLER (landing page) =================
+     One flat SVG drawing seen from above. Every paper face is its own path; each pose is a set of points, and the
+     animation blends the points between poses. Each pocket is a real <button>. */
+  const ft = (() => {
+  const NS = "http://www.w3.org/2000/svg";
+  const R = 150;               // a pocket's side when closed (SVG units)
+  const VB = 270;              // the viewBox runs from -VB to +VB
+
+  /* ---- sections: colours, labels, icons (as in index.html) ---- */
+  const SEC = {
+    about:    { sx:-1, sy:-1, label:"ABOUT",    rot:-45, c1:"#ddd6f3", c2:"#c9bdea",
+                icon:'<circle cx="0" cy="-4" r="4.2"/><path d="M-8 9 c0 -5.5 3.6 -8.5 8 -8.5 s8 3 8 8.5"/>' },
+    projects: { sx: 1, sy:-1, label:"PROJECTS", rot: 45, c1:"#f8d3bb", c2:"#f0b997",
+                icon:'<path d="M-10 -6 h6.5 l2 2.4 h11.5 v11.6 h-20Z"/><path d="M-10 -1.6 h20"/>' },
+    resume:   { sx:-1, sy: 1, label:"RÉSUMÉ",   rot: 45, c1:"#c3d7f1", c2:"#a5c1e8",
+                icon:'<path d="M-7 -10 H2.5 L7.5 -5 V10 H-7 Z"/><path d="M2.5 -10 V-5 H7.5"/><path d="M-3.5 0 H4 M-3.5 4 H4 M-3.5 -4 H0"/>' },
+    contact:  { sx: 1, sy: 1, label:"CONTACT",  rot:-45, c1:"#d6b3e2", c2:"#c196d3",
+                icon:'<rect x="-10" y="-6.5" width="20" height="14" rx="1.8"/><path d="M-10 -5.5 l10 7 l10 -7"/>' }
+  };
+  const KEYS = Object.keys(SEC);
+  // the numbers written on the inner triangles, like a real fortune teller (B shows 1, 2, 5, 6; C shows 3, 4, 7, 8)
+  const NUM = { y:{ about:1, projects:2, contact:5, resume:6 }, x:{ projects:3, contact:4, resume:7, about:8 } };
+
+  /* ---- helpers ---- */
+  const mid = (a, b) => [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+  const sub = (a, b) => [a[0] - b[0], a[1] - b[1]];
+  const add = (a, b) => [a[0] + b[0], a[1] + b[1]];
+  const mul = (a, k) => [a[0] * k, a[1] * k];
+  const len = a => Math.hypot(a[0], a[1]);
+  const unit = a => mul(a, 1 / (len(a) || 1));
+  const f = n => (+n).toFixed(1);
+  const pts = arr => arr.map(v => v.map(f).join(",")).join(" ");
+  function mix(a, b, t){
+    const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+    const A = p(a), B = p(b);
+    return "#" + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, "0")).join("");
+  }
+  function reflect(p, a, b){           // mirror point p across the line a–b
+    const d = sub(b, a), t = ((p[0] - a[0]) * d[0] + (p[1] - a[1]) * d[1]) / (d[0] * d[0] + d[1] * d[1]);
+    const q = add(a, mul(d, t));
+    return sub(mul(q, 2), p);
+  }
+
+  /* ================= POSES =================
+     For each section:  C (where its crease starts), Pv, Tip, Ph (its corners), In (its inner triangle [Pv, Ph, Cc])
+     plus the dark hole, the slit line, the bow of the outer edges, and in D the lifted flap and the fortune. */
+  function poseA(){
+    const p = { name:"A", hole: diamond(4, 4), bow: .17, sec: {} };
+    for (const k of KEYS){
+      const { sx, sy } = SEC[k], o = -.6, C = [sx * o, sy * o];      // o < 0: each pocket reaches a hair past the centre line
+      // a petal: the outer tip reaches a little past the square's corner, the outer edges bow out
+      // its inner triangle waits under the pocket, sharing corners with its neighbours (so they stay joined and only
+      // the slit opens as the teller does); it is hidden while the teller is fully closed
+      p.sec[k] = { C, Pv:[sx * o, sy * R * .95], Tip:[sx * R * 1.1, sy * R * 1.1], Ph:[sx * R * .95, sy * o],
+                   In:[[0, sy * R * .9], [sx * R * .9, 0], [0, 0]] };
+    }
+    return p;
+  }
+  // B (axis "y": top and bottom halves) and C (axis "x": left and right halves).
+  // w: half-width of the diamond along the slit; h: from the slit to an apex; g: half the slit (a 2.4px crease);
+  // shift: moves one half's centre line sideways (used by D to give the chosen triangle more room)
+  function poseOpen(axis, { w = 118, h = 138, g = .8, tipOut = 1.4, tipSide = 1.3, shift = null } = {}){
+    const p = { name: axis === "y" ? "B" : "C", axis, bow: .1, sec: {}, hole: axis === "y" ? diamond(w, h) : diamond(h, w) };
+    p.slit = axis === "y" ? [[-w, 0], [w, 0]] : [[0, -w], [0, w]];
+    for (const k of KEYS){
+      const { sx, sy } = SEC[k];
+      let Pv, Ph, Cc, Tip;
+      if (axis === "y"){
+        const m = shift && shift.half === sy ? shift.m : 0;           // this half's centre line, moved sideways
+        Pv = [m, sy * h]; Ph = [sx * w, sy * g]; Cc = [m, sy * g];
+        Tip = [sx * w * tipSide, sy * h * tipOut];
+      } else {
+        Pv = [sx * g, sy * w]; Ph = [sx * h, sy * .01]; Cc = [sx * g, 0];
+        Tip = [sx * h * tipOut, sy * w * tipSide];
+      }
+      p.sec[k] = { C: mid(Pv, Ph), Pv, Tip, Ph, In:[Pv, Ph, Cc] };
+    }
+    if (shift){ p.hole = [[shift.half < 0 ? shift.m : 0, -h], [w, 0], [shift.half > 0 ? shift.m : 0, h], [-w, 0]]; }
+    return p;
+  }
+  // D: pose B exactly as it is (every pocket and every other inner triangle stays put). Only the chosen inner
+  // triangle moves: it stands up toward the viewer on its outer edge (Pv–Ph, the edge it shares with its pocket).
+  // Seen from above, a standing flap is foreshortened to a thin sliver along that edge (28% of the triangle's depth),
+  // leaning over the hollow, so it never covers the pocket's label or icon. "open" > 1 opens B wider, evenly.
+  const FLAP_DEPTH = .28;
+  function poseD(sel, open = 1, lift = 1){
+    const p = open === 1 ? poseOpen("y") : poseOpen("y", { w: 118 * open, h: 138 * open });
+    p.name = "D";
+    const [Pv, Ph, Cc] = p.sec[sel].In;
+    const foot = footOn(Cc, Pv, Ph);                              // where the triangle's depth meets the hinge
+    const depth = 1 - (1 - FLAP_DEPTH) * lift;                    // lying flat (1) → a standing sliver (.28)
+    p.flap = { key: sel, lift, pts: [Pv, Ph, add(foot, mul(sub(Cc, foot), depth))],
+               shadow: [Pv, Ph, add(foot, mul(sub(Cc, foot), Math.min(1, depth + .1 * lift)))] };
+    p.fortune = sel; p.open = open;
+    return p;
+  }
+  function footOn(p, a, b){                // the closest point to p on the line a–b
+    const d = sub(b, a), t = ((p[0] - a[0]) * d[0] + (p[1] - a[1]) * d[1]) / (d[0] * d[0] + d[1] * d[1]);
+    return add(a, mul(d, t));
+  }
+  function diamond(w, h){ return [[0, -h], [w, 0], [0, h], [-w, 0]]; }
+  /* ================= DRAWING ================= */
+  const box = document.getElementById("ftBox"), base = document.getElementById("ftBase"), topL = document.getElementById("ftTop");
+  const el = (parent, tag, attrs = {}) => { const e = document.createElementNS(NS, tag); for (const a in attrs) e.setAttribute(a, attrs[a]); parent.appendChild(e); return e; };
+  const defs = el(base, "defs");
+  defs.innerHTML = `<filter id="ft-soft" filterUnits="userSpaceOnUse" x="-300" y="-300" width="600" height="600"><feGaussianBlur stdDeviation=".45"/></filter>
+    <linearGradient id="ft-slit" gradientUnits="userSpaceOnUse"></linearGradient>`;
+  const slitG = defs.querySelector("#ft-slit");
+  // a deeper shade of two neighbouring sections' colours (never black or grey)
+  const deep = (a, b) => mix(mix(SEC[a].c2, SEC[b].c2, .5), "#3b3a48", .12);
+
+  // base layer: the hollow (seen only through the slit), the inner triangles, the fortune paper, numbers, the slit's shadow
+  // the hollow behind the inner triangles: only ever glimpsed at the slit's faded ends, so a soft mix of the four colours
+  const hole = el(base, "polygon", { fill: mix(mix(mix(SEC.about.c2, SEC.projects.c2, .5), mix(SEC.resume.c2, SEC.contact.c2, .5), .5), "#fffaf2", .2) });
+  const inner = {};
+  for (const k of KEYS){
+    const tint = mix(SEC[k].c1, "#fffaf2", .55);                 // a pale version of the neighbouring pocket's colour
+    defs.insertAdjacentHTML("beforeend",
+      `<linearGradient id="ft-ig-${k}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(tint, "#ffffff", .35)}"/><stop offset="1" stop-color="${mix(tint, SEC[k].c2, .55)}"/></linearGradient>
+       <radialGradient id="ft-ir-${k}" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="${mix(SEC[k].c2, "#3b3a48", .25)}" stop-opacity=".3"/><stop offset="1" stop-color="${SEC[k].c2}" stop-opacity="0"/></radialGradient>`);
+    inner[k] = {
+      face: el(base, "polygon", { fill:`url(#ft-ig-${k})`, stroke: mix(tint, SEC[k].c2, .7), "stroke-width":".8", "stroke-linejoin":"round" }),
+      hollow: el(base, "polygon", { fill:`url(#ft-ir-${k})` }),
+      lin: defs.querySelector(`#ft-ig-${k}`), rad: defs.querySelector(`#ft-ir-${k}`)
+    };
+  }
+  const fortunePaper = el(base, "polygon", { fill:"#fffaf1", stroke:"#cdbfac", "stroke-width":".9", "stroke-linejoin":"round" });
+  const fortuneText = el(base, "text", { class:"fortune" });
+  const nums = {};
+  for (const k of KEYS) nums[k] = el(base, "text", { class:"num", fill: mix(SEC[k].c2, "#3b3a48", .5) });   // a deep shade of its section's colour
+  const slitShadow = el(base, "line", { stroke:"url(#ft-slit)", "stroke-width":"2", "stroke-linecap":"butt", filter:"url(#ft-soft)" });
+
+  // pocket layers: one SVG per real <button>
+  const pk = {};
+  for (const k of KEYS){
+    const s = SEC[k], btn = box.querySelector(`.flapbtn[data-key="${k}"]`);
+    const svg = el(btn, "svg", { viewBox:`${-VB} ${-VB} ${2 * VB} ${2 * VB}`, "aria-hidden":"true", focusable:"false" });
+    const under = el(svg, "path", { class:"face" });                // a solid underlay, so no background shows between the two faces
+    const f1 = el(svg, "path", { class:"face hit" });           // face along the vertical centre line (darker, as in index.html)
+    const f2 = el(svg, "path", { class:"face hit" });           // face along the horizontal centre line (lighter)
+    const edge = mix(s.c2, "#3b3a48", .3);                           // a deeper shade of the pocket's own colour
+    const outline = el(svg, "path", { class:"outline", stroke: edge });          // the outer edges
+    const innerEdge = el(svg, "path", { class:"outline", stroke: edge });        // the edges toward the centre: only once the teller opens
+    const icon = el(svg, "g", { class:"icon" }); icon.innerHTML = s.icon;
+    const label = el(svg, "text", { class:"label" }); label.textContent = s.label;
+    const ring = el(svg, "path", { class:"ring" });
+    pk[k] = { btn, under, f1, f2, outline, innerEdge, icon, label, ring };
+  }
+  // top layer: the lifted flap (the back of the paper) and its soft shadow
+  // closed: one thin seam where pockets meet (1px, a little darker than the paper); the pockets meet at a point
+  const seams = el(topL, "path", { fill:"none", stroke:"#8a7d92", "stroke-opacity":".55", "stroke-width":"1", "vector-effect":"non-scaling-stroke" });
+  const flapShadow = el(topL, "polygon", { filter:"url(#ft-soft2)" });
+  topL.insertAdjacentHTML("afterbegin", `<defs><filter id="ft-soft2" x="-20%" y="-20%" width="140%" height="140%"><feGaussianBlur stdDeviation="3"/></filter></defs>`);
+  const flap = el(topL, "polygon", { "stroke-width":".9", "stroke-linejoin":"round" });
+
+  function bow(a, b, o, amt){           // an outer edge a→b bowing outward (away from o): its quadratic control point
+    const m = mid(a, b), d = sub(b, a), L = len(d) || 1;
+    let n = [-d[1] / L, d[0] / L];
+    if ((m[0] - o[0]) * n[0] + (m[1] - o[1]) * n[1] < 0) n = mul(n, -1);
+    return add(m, mul(n, L * amt));
+  }
+  // paper shading: each face its own lightness, lighter when it leans toward the light (top left)
+  const LIGHT = [-0.6, -0.8];
+  function shade(color, a, b, c){
+    const d = unit(sub(c, mid(a, b)));
+    const k = (d[0] * LIGHT[0] + d[1] * LIGHT[1]) * .1;
+    return k >= 0 ? mix(color, "#ffffff", Math.min(.35, k)) : mix(color, "#3b3a48", Math.min(.3, -k));
+  }
+  // how much room a straight line through m (direction d) has inside polygon poly, on its shorter side
+  function room(poly, m, d){
+    let best = Infinity;
+    for (let i = 0; i < poly.length; i++){
+      const a = poly[i], b = poly[(i + 1) % poly.length], e = sub(b, a);
+      const den = d[0] * e[1] - d[1] * e[0];
+      if (Math.abs(den) < 1e-9) continue;
+      const w = sub(a, m), t = (w[0] * e[1] - w[1] * e[0]) / den, u = (w[0] * d[1] - w[1] * d[0]) / den;
+      if (u >= 0 && u <= 1 && Math.abs(t) > .01) best = Math.min(best, Math.abs(t));
+    }
+    return best;
+  }
+  const deg = v => Math.atan2(v[1], v[0]) * 180 / Math.PI;
+  const CLOSED = poseA();
+  const labelW = {};
+
+  function draw(p){
+    const opened = p === CLOSED ? 0 : (p.numOpacity ?? 1);           // 0 closed … 1 open: seams give way to separate edges
+    hole.setAttribute("points", pts(p.hole));
+    {   // the seams follow the pockets' inner edges and fade out as they part
+      const q = p.sec, P = v => v.map(f).join(" ");
+      seams.setAttribute("d", `M${P(mid(q.about.Pv, q.projects.Pv))} L${P(mid(q.resume.Pv, q.contact.Pv))} M${P(mid(q.about.Ph, q.resume.Ph))} L${P(mid(q.projects.Ph, q.contact.Ph))}`);
+      seams.style.opacity = 1 - opened;
+    }
+    for (const k of KEYS){
+      const s = SEC[k], q = p.sec[k], o = pk[k];
+      const c1 = bow(q.Pv, q.Tip, q.C, p.bow), c2 = bow(q.Tip, q.Ph, q.C, p.bow);
+      const P = v => v.map(f).join(" ");
+      o.f1.setAttribute("d", `M${P(q.C)} L${P(q.Pv)} Q${P(c1)} ${P(q.Tip)} Z`);
+      o.f2.setAttribute("d", `M${P(q.C)} L${P(q.Tip)} Q${P(c2)} ${P(q.Ph)} Z`);
+      o.f1.setAttribute("fill", shade(s.c2, q.C, q.Tip, q.Pv));
+      o.f2.setAttribute("fill", shade(s.c1, q.C, q.Tip, q.Ph));
+      o.under.setAttribute("fill", mix(s.c1, s.c2, .5));
+      const outline = `M${P(q.Pv)} Q${P(c1)} ${P(q.Tip)} Q${P(c2)} ${P(q.Ph)} L${P(q.C)} Z`;
+      o.outline.setAttribute("d", `M${P(q.Pv)} Q${P(c1)} ${P(q.Tip)} Q${P(c2)} ${P(q.Ph)}`);
+      o.innerEdge.setAttribute("d", `M${P(q.Ph)} L${P(q.C)} L${P(q.Pv)}`);
+      o.innerEdge.style.opacity = opened;
+      o.ring.setAttribute("d", outline); o.under.setAttribute("d", outline);
+
+      // label and icon: the label runs parallel to the pocket's long edge (Pv–Ph; in pose A that is the same −45° as
+      // index.html) and slides along the crease to where the pocket is widest; the icon sits just beyond it, toward
+      // the tip. Each shrinks only if it would not fit, so both always sit fully on the pocket.
+      const crease = sub(q.Tip, q.C), along = unit(crease);
+      let rim = unit(sub(q.Ph, q.Pv)), rimDeg = deg(rim);
+      const near = a => Math.abs(((a - s.rot) % 360 + 540) % 360 - 180);           // keep the text the same way up as when closed
+      if (near(rimDeg + 180) < near(rimDeg)){ rimDeg += 180; rim = mul(rim, -1); }
+      const nrm = [-rim[1], rim[0]];
+      const poly = [q.C, q.Pv, q.Tip, q.Ph];
+      const roomAt = (m, halfH, dirv) => Math.min(...[-halfH, 0, halfH].map(h => room(poly, add(m, mul(nrm, h)), dirv)));
+      const lw = labelW[k] || 100;
+      let best = null;
+      for (let t = .1; t <= .76; t += .02){
+        const m = add(q.C, mul(crease, t)), sc = Math.min(1, (roomAt(m, 12, rim) - 5) * 2 / lw);
+        const score = sc - .25 * Math.abs(t - .42);
+        if (!best || score > best.score) best = { score, sc, m };
+      }
+      const ls = Math.max(.45, best.sc), Lc = best.m;
+      const Ic = add(Lc, mul(along, 12 * ls + 26));
+      const is = Math.max(.55, Math.min(1.25, (Math.min(roomAt(Ic, 13, rim), roomAt(Ic, 13, nrm)) - 3) * 2 / 26));
+      o.label.setAttribute("transform", `translate(${f(Lc[0])} ${f(Lc[1])}) rotate(${f(rimDeg)}) scale(${f(ls)})`);
+      o.icon.setAttribute("transform", `translate(${f(Ic[0])} ${f(Ic[1])}) rotate(${f(rimDeg - s.rot)}) scale(${f(is)})`);
+
+      // inner triangle: pale tint, darker toward the slit and the centre point
+      const t = q.In, I = inner[k], flat = Math.abs(t[0][0] - t[2][0]) + Math.abs(t[0][1] - t[2][1]) + Math.abs(t[1][0] - t[2][0]) < 1;
+      I.face.setAttribute("points", pts(t)); I.hollow.setAttribute("points", pts(t));
+      const foot = mid(t[1], t[2]);
+      I.lin.setAttribute("x1", f(t[0][0])); I.lin.setAttribute("y1", f(t[0][1])); I.lin.setAttribute("x2", f(foot[0])); I.lin.setAttribute("y2", f(foot[1]));
+      I.rad.setAttribute("cx", f(t[2][0])); I.rad.setAttribute("cy", f(t[2][1])); I.rad.setAttribute("r", f(Math.max(1, len(sub(t[0], t[2])) * .75)));
+      const lifted = p.flap && p.flap.key === k;
+      I.face.style.visibility = I.hollow.style.visibility = flat || lifted || p === CLOSED ? "hidden" : "visible";
+      // its number
+      const n = nums[k], num = p.axis ? NUM[p.axis][k] : null;
+      if (num && !lifted && !flat){
+        const c = [(t[0][0] + t[1][0] + t[2][0]) / 3, (t[0][1] + t[1][1] + t[2][1]) / 3];
+        n.textContent = num; n.setAttribute("x", f(c[0])); n.setAttribute("y", f(c[1] + 7)); n.style.visibility = "visible";
+        n.style.opacity = p.numOpacity ?? 1;
+      } else n.style.visibility = "hidden";
+    }
+    // the slit: a thin crease with a soft shadow, like paper parting
+    if (p.slit){
+      slitShadow.setAttribute("x1", f(p.slit[0][0])); slitShadow.setAttribute("y1", f(p.slit[0][1]));
+      slitShadow.setAttribute("x2", f(p.slit[1][0])); slitShadow.setAttribute("y2", f(p.slit[1][1]));
+      slitShadow.style.visibility = "visible"; slitShadow.setAttribute("stroke-opacity", f(p.slitOpacity ?? 1));
+      // colours along the slit: B (across) runs About|Résumé → Projects|Contact; C (up and down) About|Projects → Résumé|Contact
+      const [a, b] = p.axis === "x" ? [deep("about", "projects"), deep("resume", "contact")] : [deep("about", "resume"), deep("projects", "contact")];
+      ["x1","y1","x2","y2"].forEach((n, i) => slitG.setAttribute(n, f(p.slit[i >> 1][i & 1])));
+      const key = a + b;
+      if (slitG.dataset.k !== key){
+        slitG.dataset.k = key;
+        slitG.innerHTML = `<stop offset="0" stop-color="${a}" stop-opacity="0"/><stop offset=".16" stop-color="${a}" stop-opacity=".85"/>
+          <stop offset=".44" stop-color="${a}" stop-opacity=".85"/><stop offset=".56" stop-color="${b}" stop-opacity=".85"/>
+          <stop offset=".84" stop-color="${b}" stop-opacity=".85"/><stop offset="1" stop-color="${b}" stop-opacity="0"/>`;
+      }
+    } else slitShadow.style.visibility = "hidden";
+    // the fortune paper sits where the lifted flap was
+    if (p.fortune){
+      fortunePaper.setAttribute("points", pts(p.sec[p.fortune].In));
+      fortunePaper.style.visibility = fortuneText.style.visibility = "visible";
+      const L = p.layout || { id:"none", fs:12, px:12, lines:[] };
+      if (fortuneText.dataset.for !== L.id){
+        fortuneText.dataset.for = L.id;
+        fortuneText.style.fontSize = L.fs + "px";
+        fortuneText.innerHTML = L.lines.map(l => `<tspan x="${f(l.x)}" y="${f(l.y)}">${l.text}</tspan>`).join("");
+        fortuneText.dataset.px = L.px.toFixed(1);
+      }
+      fortuneText.style.opacity = p.textOpacity ?? 1;
+    } else fortunePaper.style.visibility = fortuneText.style.visibility = "hidden";
+    if (p.flap){
+      const s = SEC[p.flap.key], tint = mix(s.c1, "#fffaf2", .55);
+      flap.setAttribute("points", pts(p.flap.pts));
+      // its own pale tint (lilac, peach, blue, purple), a little darker as it stands up and shows the back of the paper
+      flap.setAttribute("fill", mix(tint, s.c2, .1 + .25 * p.flap.lift));
+      flap.setAttribute("stroke", mix(tint, s.c2, .75));
+      flapShadow.setAttribute("points", pts(p.flap.shadow));
+      flapShadow.setAttribute("fill", mix(s.c2, "#3b3a48", .2)); flapShadow.setAttribute("fill-opacity", ".28");
+      flap.style.visibility = flapShadow.style.visibility = "visible";
+    } else flap.style.visibility = flapShadow.style.visibility = "hidden";
+  }
+
+  // the fortune, laid out once per pose D: balanced lines,
+  // stacked from the slit (the triangle's widest part) toward its point, centred on one line, and kept at least
+  // 12px from every edge of the triangle and of the standing flap. Sizes from 22px down to minPx.
+  const PHRASE = {
+    about: "Origami lover ahead!", projects: "Two case studies await.",
+    resume: "A one-page summary awaits.", contact: "She'd love to hear from you."
+  };
+  function across(poly, y){                 // the x-range of a convex polygon at height y (or null)
+    const xs = [];
+    for (let i = 0; i < poly.length; i++){
+      const a = poly[i], b = poly[(i + 1) % poly.length];
+      if ((a[1] - y) * (b[1] - y) <= 0 && a[1] !== b[1]) xs.push(a[0] + (b[0] - a[0]) * (y - a[1]) / (b[1] - a[1]));
+    }
+    return xs.length >= 2 ? [Math.min(...xs), Math.max(...xs)] : null;
+  }
+  function offset(poly, d){                 // move every edge of a convex polygon inward by d (outward if d < 0)
+    const c = poly.reduce((s, v) => add(s, mul(v, 1 / poly.length)), [0, 0]);
+    const lines = poly.map((a, i) => {
+      const b = poly[(i + 1) % poly.length], e = unit(sub(b, a));
+      let n = [-e[1], e[0]]; if ((c[0] - a[0]) * n[0] + (c[1] - a[1]) * n[1] < 0) n = mul(n, -1);
+      return { p: add(a, mul(n, d)), e };
     });
-    const dz = ["scale(.4)", "scale(.62)", "scale(.4)", "scale(.62)", "scale(.4)", "scale(1)", "scale(1)"];
-    anims.push(cavity.querySelector(".sheet").animate([{ opacity: 0, offset: 0 }, { opacity: 0, offset: .42 }, { opacity: 1, offset: .5 }, { opacity: 1, offset: 1 }], { duration: SEQ_MS, fill: "forwards" }));
-    anims.push(diamond.animate(dz.map((t, i) => ({ transform: t, offset: offs[i], easing: ease })), { duration: SEQ_MS, fill: "forwards" }));
-    // hinge: rotate the clicked inner flap about its outer fold line, picking the direction that lifts it toward the viewer
-    const pocket = cavity.querySelector(".q-" + route), leaf = pocket.querySelector(".leaf"), fortune = pocket.querySelector(".fortune");
-    const axis = { about: [1, -1], projects: [1, 1], resume: [1, 1], contact: [1, -1] }[route];
-    const toCentre = { about: [1, 1], projects: [-1, 1], resume: [1, -1], contact: [-1, -1] }[route];
-    let ang = 152;
-    if (new DOMMatrix().rotateAxisAngleSelf(axis[0], axis[1], 0, ang).transformPoint(new DOMPoint(toCentre[0], toCentre[1], 0)).z < 0) ang = -ang;
-    const rot = a => `rotate3d(${axis[0]}, ${axis[1]}, 0, ${a}deg)`;
-    pocket.style.zIndex = 2;
-    anims.push(leaf.animate([
-      { transform: rot(0), filter: "brightness(1)", offset: 0 },
-      { transform: rot(0), filter: "brightness(1)", offset: .53 },
-      { transform: rot(ang), filter: "brightness(.82)", offset: .7, easing: "cubic-bezier(.3,.8,.3,1)" },
-      { transform: rot(ang), filter: "brightness(.82)", offset: 1 }
-    ], { duration: SEQ_MS, fill: "forwards" }));
-    anims.push(fortune.animate([{ opacity: 0, offset: 0 }, { opacity: 0, offset: .56 }, { opacity: 1, offset: .64 }, { opacity: 1, offset: 1 }], { duration: SEQ_MS, fill: "forwards" }));
-    seq = { route, anims, pocket, timers: [
-      setTimeout(() => veil.classList.add("on"), SEQ_MS - 150),
-      setTimeout(finishFold, SEQ_MS)
-    ]};
-  }
-  // stop the fold without navigating (used when a header control is clicked mid-animation)
-  function cancelFold(){
-    if (!seq) return;
-    const s = seq; seq = null;
-    s.timers.forEach(clearTimeout);
-    s.anims.forEach(a => a.cancel());
-    s.pocket.style.zIndex = "";
-    tellerWrap.classList.remove("pumping");
-    teller.classList.remove("opening");
-    teller.querySelectorAll(".flap.sel").forEach(f => f.classList.remove("sel"));
-    veil.classList.remove("on", "out");
-    root.classList.remove("busy");
-    busy = false;
-  }
-  function finishFold(){
-    if (!seq) return;
-    const s = seq; seq = null;
-    s.timers.forEach(clearTimeout);
-    s.anims.forEach(a => a.cancel());
-    s.pocket.style.zIndex = "";
-    tellerWrap.classList.remove("pumping");
-    teller.classList.add("no-anim"); teller.classList.remove("opening");
-    teller.querySelectorAll(".flap.sel").forEach(f => f.classList.remove("sel"));
-    go(s.route, { animated: true });
-    root.classList.remove("busy");
-    requestAnimationFrame(() => {
-      teller.classList.remove("no-anim");
-      veil.classList.add("out"); veil.classList.remove("on");
-      setTimeout(() => { veil.classList.remove("out"); busy = false; }, 330);
+    return lines.map((L, i) => {
+      const M = lines[(i - 1 + lines.length) % lines.length], den = M.e[0] * L.e[1] - M.e[1] * L.e[0];
+      const w = sub(L.p, M.p), t = (w[0] * L.e[1] - w[1] * L.e[0]) / den;
+      return add(M.p, mul(M.e, t));
     });
   }
-  // a second click anywhere, or Escape, skips straight to the section (the click itself is swallowed)
+  function layoutFortune(key, t, flapPts, minPx, maxPx = 22, maxLines = 3, marginPx = 12){
+    const pxPerUnit = box.clientWidth / (2 * VB);
+    const M = marginPx / pxPerUnit;                              // 12px (on a phone, less), in drawing units
+    const T = offset(t, M), F = offset(flapPts, -M);
+    const room = y => {
+      const a = across(T, y); if (!a) return null;
+      let [l, r] = a; const b = across(F, y);
+      if (b && b[1] > l && b[0] < r){ if ((b[0] + b[1]) / 2 < (l + r) / 2) l = Math.max(l, b[1]); else r = Math.min(r, b[0]); }
+      return r > l ? [l, r] : null;
+    };
+    const Cc = t[2], toApex = Math.sign(t[0][1] - Cc[1]), slitY = Cc[1] + toApex * M;   // the inset slit edge
+    const words = PHRASE[key].split(" ");
+    const probe = el(base, "text", { class:"fortune" });
+    let best = null;
+    for (let px = maxPx; px >= minPx - 1e-6 && !best; px -= .5){
+      const fs = px / pxPerUnit, lh = fs * 1.12;
+      probe.style.fontSize = fs + "px";
+      const width = w => { probe.textContent = w; return probe.getComputedTextLength(); };
+      const ws = words.map(width), space = width("a a") - width("aa");
+      const lineW = (i, j) => ws.slice(i, j).reduce((a, b) => a + b, 0) + space * (j - i - 1);
+      for (let n = 1; n <= maxLines; n++){
+        // bands top to bottom; the band next to the slit is the widest
+        const bands = [];
+        for (let k = 0; k < n; k++){
+          const fromSlit = toApex < 0 ? n - 1 - k : k;
+          const y0 = slitY + toApex * fromSlit * lh, y1 = y0 + toApex * lh;
+          const a = room(Math.min(y0, y1) + .5), b = room(Math.max(y0, y1) - .5);
+          if (!a || !b){ bands.length = 0; break; }
+          bands.push({ top: Math.min(y0, y1), l: Math.max(a[0], b[0]), r: Math.min(a[1], b[1]) });
+        }
+        if (bands.length !== n) continue;
+        const wide = bands[toApex < 0 ? n - 1 : 0], aim = (wide.l + wide.r) / 2;
+        // every way to break the words into n lines
+        const splits = [], rec = (start, left, acc) => {
+          if (left === 1){ splits.push([...acc, [start, words.length]]); return; }
+          for (let j = start + 1; j <= words.length - left + 1; j++) rec(j, left - 1, [...acc, [start, j]]);
+        };
+        rec(0, n, []);
+        for (const sp of splits){
+          const w = sp.map(([i, j]) => lineW(i, j));
+          let lo = -Infinity, hi = Infinity;
+          w.forEach((wi, i) => { lo = Math.max(lo, bands[i].l + wi / 2); hi = Math.min(hi, bands[i].r - wi / 2); });
+          if (lo > hi) continue;                                   // some line would cross an edge
+          const cx = Math.min(hi, Math.max(lo, aim));
+          const avg = w.reduce((a, b) => a + b, 0) / n;
+          const score = Math.max(...w) - Math.min(...w) + (n - 1) * avg * .12;   // even lines, and no more lines than needed
+          if (!best || score < best.score) best = { score, fs, px, lines: sp.map(([i, j], k) => ({ text: words.slice(i, j).join(" "), x: cx, y: bands[k].top + fs * .84 })) };
+        }
+      }
+    }
+    probe.remove();
+    if (best) best.id = key + "|" + best.px + "|" + t.map(v => v.map(f).join(",")).join(";");
+    return best;
+  }
+  // choose pose D for a section: B at its normal size first, then opened a little wider each step (everything moves
+  // out evenly, no shape changes) until the fortune fits at 18px or more, in three lines or fewer, with 12px margins
+  const dCache = {};
+  function chooseD(sel){
+    const w = box.clientWidth, id = sel + "|" + w;
+    if (dCache[id]) return dCache[id];
+    // the smallest opening (in 5% steps beyond B) where the fortune fits at 18px or more, in three lines or fewer
+    for (let open = 1; open <= 1.65 + 1e-9; open = Math.round((open + .05) * 100) / 100){
+      const p = poseD(sel, open), L = layoutFortune(sel, p.sec[sel].In, p.flap.pts, 18, 22, 3);
+      if (L) return (dCache[id] = { open, layout: L });
+    }
+    // small screens only (18px cannot fit): open less, so the open teller stays inside its own space, and use
+    // smaller words and margins rather than crossing an edge
+    const p = poseD(sel, 1.3), T = p.sec[sel].In, F = p.flap.pts;
+    const layout = layoutFortune(sel, T, F, 9, 18, 4, 6) || layoutFortune(sel, T, F, 7, 12, 5, 3);
+    return (dCache[id] = { open: 1.3, layout });
+  }
+
+  /* ================= POSE BLENDING =================
+     Every pose has the same points, so an in-between frame is just each point moved part of the way. */
+  const lerp = (a, b, t) => a + (b - a) * t;
+  const lp = (a, b, t) => [lerp(a[0], b[0], t), lerp(a[1], b[1], t)];
+  function blend(a, b, t){
+    const o = { sec: {}, bow: lerp(a.bow, b.bow, t), axis: b.axis || a.axis,
+      hole: a.hole.map((v, i) => lp(v, b.hole[i], t)),
+      slit: [0, 1].map(i => lp((a.slit || [[0,0],[0,0]])[i], (b.slit || [[0,0],[0,0]])[i], t)),
+      numOpacity: lerp(a.axis ? 1 : 0, b.axis ? 1 : 0, t), slitOpacity: lerp(a.slit ? 1 : 0, b.slit ? 1 : 0, t) };
+    for (const k of KEYS){
+      const P = a.sec[k], Q = b.sec[k];
+      o.sec[k] = { C: lp(P.C, Q.C, t), Pv: lp(P.Pv, Q.Pv, t), Tip: lp(P.Tip, Q.Tip, t), Ph: lp(P.Ph, Q.Ph, t), In: P.In.map((v, i) => lp(v, Q.In[i], t)) };
+    }
+    if (a.flap && b.flap){
+      o.flap = { key: b.flap.key, lift: lerp(a.flap.lift, b.flap.lift, t),
+        pts: a.flap.pts.map((v, i) => lp(v, b.flap.pts[i], t)), shadow: a.flap.shadow.map((v, i) => lp(v, b.flap.shadow[i], t)) };
+      o.fortune = b.fortune; o.layout = b.layout; o.textOpacity = 0;      // the words appear once the flap is up
+    }
+    return o;
+  }
+  const ease = t => t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;   // slow–fast–slow, like fingers pinching
+
+  /* ================= ON THE PAGE =================
+     A flap click (or Enter / Space) plays A → B → A → C → A → B → D; after a short pause the site goes to that
+     section with go(). A second click anywhere, or Escape, skips straight there. Everything else (nav, logo,
+     "View my projects", back, history, direct links) never plays it. Coming back home shows it closed again. */
+  const said = document.getElementById("ftSaid");
+  let sel = null, anim = null, hold = 0;
+  function dPose(key, lift = 1){
+    const c = chooseD(key), p = poseD(key, c.open, lift);
+    p.layout = c.layout; p.textOpacity = lift === 1 ? 1 : 0;
+    box.dataset.open = c.open;
+    return p;
+  }
+  function measureLabels(){ for (const k of KEYS) labelW[k] = pk[k].label.getComputedTextLength() || labelW[k]; }
+  const playing = () => anim !== null || hold !== 0;
+  function stop(){ if (anim){ cancelAnimationFrame(anim); anim = null; } clearTimeout(hold); hold = 0; }
+  // closed again (pose A), ready for the next visit
+  function reset(){
+    stop(); sel = null; busy = false; box.classList.remove("playing");        // (the spoken fortune is left to finish)
+    if (box.clientWidth){ measureLabels(); draw(CLOSED); }
+  }
+  function play(key){
+    stop(); sel = key; measureLabels(); said.textContent = "";
+    if (reduce.matches){ go(key); return; }                       // reduced motion: straight to the section
+    busy = true; box.classList.add("playing");
+    const A = CLOSED, B = poseOpen("y"), C = poseOpen("x"), Dflat = dPose(key, 0), D = dPose(key, 1);
+    const steps = [ [A, B, 250], [B, A, 220], [A, C, 250], [C, A, 220], [A, Dflat, 260], [Dflat, D, 330], [D, D, 220, "text"] ];
+    const t0 = performance.now();
+    const frame = now => {
+      let ms = now - t0;
+      for (const [a, b, dur, kind] of steps){
+        if (ms <= dur){
+          const t = ease(Math.min(1, ms / dur));
+          if (kind === "text") draw({ ...D, textOpacity: t });
+          else draw(blend(a, b, t));
+          anim = requestAnimationFrame(frame); return;
+        }
+        ms -= dur;
+      }
+      arrive(key);
+    };
+    anim = requestAnimationFrame(frame);
+  }
+  // the fortune is showing: announce it, then go to the section after a short pause
+  function arrive(key){
+    if (anim){ cancelAnimationFrame(anim); anim = null; }
+    draw(dPose(key, 1));
+    said.textContent = PHRASE[key];
+    clearTimeout(hold); hold = setTimeout(() => leave(key), 900);
+  }
+  function leave(key){ stop(); busy = false; box.classList.remove("playing"); go(key, { animated: true }); }
+
+  for (const k of KEYS) pk[k].btn.addEventListener("click", () => { if (!playing()) play(k); });
+  // while it plays: a click on a header control stops it and goes where that control points; any other click,
+  // or Escape, skips straight to the chosen section
   document.addEventListener("click", e => {
-    if (!seq) return;
-    if (e.target.closest(".topbar a, .topbar button")){ cancelFold(); return; }   // header controls: stop the fold, then go where they point
-    e.preventDefault(); e.stopPropagation(); finishFold();
+    if (!playing()) return;
+    if (e.target.closest(".topbar a, .topbar button")){ reset(); return; }
+    e.preventDefault(); e.stopPropagation(); leave(sel);
   }, true);
-  addEventListener("keydown", e => { if (seq && e.key === "Escape"){ e.preventDefault(); finishFold(); } });
-
-  teller.addEventListener("click", e => { const f = e.target.closest(".flap"); if (f) openFold(f.dataset.route); });
-  teller.addEventListener("keydown", e => {
-    const f = e.target.closest(".flap"); if (!f) return;
-    if (e.key === "Enter" || e.key === " "){ e.preventDefault(); openFold(f.dataset.route); }
-  });
+  addEventListener("keydown", e => { if (e.key === "Escape" && playing()){ e.preventDefault(); leave(sel); } });
+  addEventListener("resize", () => { if (current === "home" && !playing()) reset(); });
+  if (document.fonts) document.fonts.ready.then(() => { for (const k in dCache) delete dCache[k]; if (current === "home" && !playing()) reset(); });
+  return { reset, playing, flaps: () => KEYS.map(k => pk[k].f1) };
+  })();
 
   /* header links always go straight to the page (the fold plays only from the flaps) */
   document.querySelector(".nav").addEventListener("click", e => {
@@ -2955,7 +3201,7 @@ body[data-page="about"] .story-track{display:block}
   addEventListener("scroll", () => requestAnimationFrame(placeBoat), { passive: true });
   addEventListener("resize", () => requestAnimationFrame(placeBoat));
 
-  /* ---- landing: tilt toward the mouse + drifting origami pieces (skipped with reduced motion) ---- */
+  /* ---- landing: drifting origami pieces (skipped with reduced motion) ---- */
   const homeEl = $("#page-home");
   const finePointer = matchMedia("(hover:hover) and (pointer:fine)");
   let moveRaf = 0, lastEv = null;
@@ -2965,15 +3211,12 @@ body[data-page="about"] .story-track{display:block}
     if (moveRaf) return;
     moveRaf = requestAnimationFrame(() => {
       moveRaf = 0;
-      const ev = lastEv, r = tellerWrap.getBoundingClientRect();
-      const clamp = v => Math.max(-1, Math.min(1, v));
-      homeEl.style.setProperty("--tx", clamp((ev.clientX - (r.left + r.width / 2)) / (innerWidth / 2)).toFixed(3));
-      homeEl.style.setProperty("--ty", clamp((ev.clientY - (r.top + r.height / 2)) / (innerHeight / 2)).toFixed(3));
+      const ev = lastEv;
       homeEl.style.setProperty("--mx", (ev.clientX / innerWidth * 2 - 1).toFixed(3));
       homeEl.style.setProperty("--my", (ev.clientY / innerHeight * 2 - 1).toFixed(3));
     });
   });
-  document.documentElement.addEventListener("mouseleave", () => ["--tx","--ty","--mx","--my"].forEach(k => homeEl.style.setProperty(k, "0")));
+  document.documentElement.addEventListener("mouseleave", () => ["--mx","--my"].forEach(k => homeEl.style.setProperty(k, "0")));
 
   /* ---- the "Pick a fold" arrow points at whichever flap is nearest ---- */
   function aimArrow(){
@@ -2982,7 +3225,7 @@ body[data-page="about"] .story-track{display:block}
     const r = a.getBoundingClientRect(); if (!r.width) return;
     const ox = r.left, oy = r.top + r.height / 2;
     let best = null, bd = Infinity;
-    teller.querySelectorAll(".flap .f1").forEach(f => {
+    ft.flaps().forEach(f => {
       const b = f.getBoundingClientRect(), cx = b.left + b.width / 2, cy = b.top + b.height / 2, d = Math.hypot(cx - ox, cy - oy);
       if (d < bd){ bd = d; best = [cx, cy]; }
     });
